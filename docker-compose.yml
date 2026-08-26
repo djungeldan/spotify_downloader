@@ -1,0 +1,38 @@
+services:
+  app:
+    build: .
+    container_name: dbt_downloader
+    env_file:
+      - .env
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./.env:/app/.env
+    environment:
+      - TMPDIR=/tmp/dbt_downloads
+    tmpfs:
+      - /tmp/dbt_downloads:size=2G
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: dbt_downloader_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    env_file:
+      - .env
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  caddy_data:
+  caddy_config:

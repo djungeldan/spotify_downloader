@@ -1,0 +1,148 @@
+music_archiver_app  | INFO:     Started server process [1]
+music_archiver_app  | INFO:     Waiting for application startup.
+music_archiver_app  | INFO:     Application startup complete.
+music_archiver_app  | INFO:     Uvicorn running on http://0.0.0.0:3000 (Press CTRL+C to quit)
+music_archiver_app  | INFO:     172.18.0.1:35134 - "WebSocket /ws" [accepted]
+music_archiver_app  | INFO:     connection open
+music_archiver_app  | INFO:     connection closed
+music_archiver_app  | INFO:     172.18.0.1:33574 - "GET / HTTP/1.1" 200 OK
+music_archiver_app  | INFO:     172.18.0.1:33574 - "GET /api/config/status HTTP/1.1" 200 OK
+music_archiver_app  | INFO:     172.18.0.1:33586 - "WebSocket /ws" [accepted]
+music_archiver_app  | INFO:     connection open
+music_archiver_app  | INFO:     172.18.0.1:37354 - "POST /api/playlist HTTP/1.1" 200 OK
+music_archiver_app  | INFO:     172.18.0.1:37354 - "POST /api/search HTTP/1.1" 200 OK
+music_archiver_app  | 2026-02-14 17:58:39,587 - aioslsk.network.network - INFO - initializing network
+music_archiver_app  | 2026-02-14 17:58:39,587 - root - ERROR - Error searching archive: InternetArchiveProvider.search() got an unexpected keyword argument 'on_result'
+music_archiver_app  | 2026-02-14 17:58:39,587 - root - ERROR - Error searching soundcloud: SoundCloudProvider.search() got an unexpected keyword argument 'on_result'
+music_archiver_app  | 2026-02-14 17:58:39,587 - root - ERROR - Error searching prowlarr: ProwlarrProvider.search() got an unexpected keyword argument 'on_result'
+music_archiver_app  | 2026-02-14 17:58:39,587 - root - ERROR - Error searching youtube: YoutubeProvider.search() got an unexpected keyword argument 'on_result'
+music_archiver_app  | 2026-02-14 17:58:39,588 - aioslsk.network.connection - INFO - [0.0.0.0:2234] open listening connection
+music_archiver_app  | 2026-02-14 17:58:39,588 - aioslsk.network.connection - INFO - [0.0.0.0:2235] open listening connection
+music_archiver_app  | 2026-02-14 17:58:39,589 - aioslsk.network.connection - INFO - [server.slsknet.org:2416] connecting
+music_archiver_app  | 2026-02-14 17:58:39,695 - aioslsk.tasks - INFO - starting task : upnp-task
+music_archiver_app  | 2026-02-14 17:58:39,695 - aioslsk.tasks - INFO - starting task : server-ping-task
+music_archiver_app  | 2026-02-14 17:58:39,695 - aioslsk.network.upnp - INFO - starting search for IGD devices
+music_archiver_app  | 2026-02-14 17:58:39,792 - aioslsk.distributed - INFO - notifying server of our parent : level=0 root=scrantanamo
+music_archiver_app  | Connected to Soulseek
+music_archiver_app  | Starting Soulseek search for: Casey Club - Favela
+music_archiver_app  | 2026-02-14 17:58:39,977 - aioslsk.tasks - INFO - starting task : wishlist-task
+music_archiver_app  | 2026-02-14 17:58:39,978 - aioslsk.search.manager - INFO - starting wishlist search of 0 items
+music_archiver_app  | 2026-02-14 17:58:40,116 - aioslsk.network.connection - INFO - [81.104.211.37:61262|D|dasfunc] connecting
+music_archiver_app  | 2026-02-14 17:58:40,117 - aioslsk.network.connection - INFO - [31.104.54.135:61991|D|64westling] connecting
+music_archiver_app  | 2026-02-14 17:58:40,117 - aioslsk.network.connection - INFO - [71.87.216.48:52046|D|jnyrad] connecting
+music_archiver_app  | 2026-02-14 17:58:40,118 - aioslsk.network.connection - INFO - [62.238.242.159:62232|D|YounesXD] connecting
+music_archiver_app  | 2026-02-14 17:58:40,118 - aioslsk.network.connection - INFO - [141.195.137.46:61444|D|missingparts] connecting
+music_archiver_app  | 2026-02-14 17:58:40,118 - aioslsk.network.connection - INFO - [176.83.87.25:63462|D|susanaestrada] connecting
+music_archiver_app  | 2026-02-14 17:58:40,119 - aioslsk.network.connection - INFO - [209.141.207.170:50300|D|iloveouterwilds] connecting
+music_archiver_app  | 2026-02-14 17:58:40,119 - aioslsk.network.connection - INFO - [92.247.60.80:62673|D|kukusanto] connecting
+music_archiver_app  | 2026-02-14 17:58:40,119 - aioslsk.network.connection - INFO - [206.223.183.200:2234|D|sedate8782] connecting
+music_archiver_app  | 2026-02-14 17:58:40,120 - aioslsk.network.connection - INFO - [185.238.222.170:50120|D|Jimb0] connecting
+music_archiver_app  | 2026-02-14 17:58:40,145 - aioslsk.distributed - INFO - request for potential parent successful (username=64westling)
+music_archiver_app  | 2026-02-14 17:58:40,154 - aioslsk.distributed - INFO - request for potential parent successful (username=dasfunc)
+music_archiver_app  | 2026-02-14 17:58:40,172 - aioslsk.distributed - INFO - branch level 6 : PeerConnection(hostname='31.104.54.135', port=61991, state=ConnectionState.CONNECTED, incoming=False, obfuscated=False, username='64westling', connection_state=PeerConnectionState.ESTABLISHED, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,172 - aioslsk.distributed - INFO - branch root 'haunt': PeerConnection(hostname='31.104.54.135', port=61991, state=ConnectionState.CONNECTED, incoming=False, obfuscated=False, username='64westling', connection_state=PeerConnectionState.ESTABLISHED, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,172 - aioslsk.distributed - INFO - set parent : DistributedPeer(username='64westling', connection=PeerConnection(hostname='31.104.54.135', port=61991, state=ConnectionState.CONNECTED, incoming=False, obfuscated=False, username='64westling', connection_state=PeerConnectionState.ESTABLISHED, connection_type='D'), branch_level=6, branch_root='haunt')
+music_archiver_app  | 2026-02-14 17:58:40,173 - aioslsk.distributed - WARNING - connection was not registered with the distributed network : PeerConnection(hostname='71.87.216.48', port=52046, state=ConnectionState.CLOSED, incoming=False, obfuscated=False, username='jnyrad', connection_state=PeerConnectionState.AWAITING_INIT, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,174 - aioslsk.distributed - WARNING - connection was not registered with the distributed network : PeerConnection(hostname='62.238.242.159', port=62232, state=ConnectionState.CLOSED, incoming=False, obfuscated=False, username='YounesXD', connection_state=PeerConnectionState.AWAITING_INIT, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,174 - aioslsk.distributed - WARNING - connection was not registered with the distributed network : PeerConnection(hostname='141.195.137.46', port=61444, state=ConnectionState.CLOSED, incoming=False, obfuscated=False, username='missingparts', connection_state=PeerConnectionState.AWAITING_INIT, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,174 - aioslsk.distributed - WARNING - connection was not registered with the distributed network : PeerConnection(hostname='176.83.87.25', port=63462, state=ConnectionState.CLOSED, incoming=False, obfuscated=False, username='susanaestrada', connection_state=PeerConnectionState.AWAITING_INIT, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,174 - aioslsk.distributed - WARNING - connection was not registered with the distributed network : PeerConnection(hostname='209.141.207.170', port=50300, state=ConnectionState.CLOSED, incoming=False, obfuscated=False, username='iloveouterwilds', connection_state=PeerConnectionState.AWAITING_INIT, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,174 - aioslsk.distributed - WARNING - connection was not registered with the distributed network : PeerConnection(hostname='92.247.60.80', port=62673, state=ConnectionState.CLOSED, incoming=False, obfuscated=False, username='kukusanto', connection_state=PeerConnectionState.AWAITING_INIT, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,174 - aioslsk.distributed - WARNING - connection was not registered with the distributed network : PeerConnection(hostname='206.223.183.200', port=2234, state=ConnectionState.CLOSED, incoming=False, obfuscated=False, username='sedate8782', connection_state=PeerConnectionState.AWAITING_INIT, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,174 - aioslsk.distributed - WARNING - connection was not registered with the distributed network : PeerConnection(hostname='185.238.222.170', port=50120, state=ConnectionState.CLOSED, incoming=False, obfuscated=False, username='Jimb0', connection_state=PeerConnectionState.AWAITING_INIT, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,175 - aioslsk.distributed - INFO - notifying server of our parent : level=7 root=haunt
+music_archiver_app  | 2026-02-14 17:58:40,347 - aioslsk.distributed - INFO - branch level 7 : PeerConnection(hostname='209.141.207.170', port=50300, state=ConnectionState.CONNECTED, incoming=False, obfuscated=False, username='iloveouterwilds', connection_state=PeerConnectionState.ESTABLISHED, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,347 - aioslsk.distributed - INFO - branch root 'haunt': PeerConnection(hostname='209.141.207.170', port=50300, state=ConnectionState.CONNECTED, incoming=False, obfuscated=False, username='iloveouterwilds', connection_state=PeerConnectionState.ESTABLISHED, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,465 - aioslsk.distributed - INFO - branch level 4 : PeerConnection(hostname='206.223.183.200', port=2234, state=ConnectionState.CONNECTED, incoming=False, obfuscated=False, username='sedate8782', connection_state=PeerConnectionState.ESTABLISHED, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,465 - aioslsk.distributed - INFO - branch root 'haunt': PeerConnection(hostname='206.223.183.200', port=2234, state=ConnectionState.CONNECTED, incoming=False, obfuscated=False, username='sedate8782', connection_state=PeerConnectionState.ESTABLISHED, connection_type='D')
+music_archiver_app  | 2026-02-14 17:58:40,472 - aioslsk.network.connection - INFO - [136.32.24.163:49152|P|jonny5] connecting
+music_archiver_app  | 2026-02-14 17:58:40,604 - aioslsk.network.connection - INFO - [199.204.82.200:35641|P|montr0n] connecting
+music_archiver_app  | 2026-02-14 17:58:40,604 - aioslsk.network.connection - INFO - [81.182.134.95:2234|P|fgp606] connecting
+music_archiver_app  | 2026-02-14 17:58:40,605 - aioslsk.network.connection - INFO - [79.30.20.96:2234|P|Jeremy] connecting
+music_archiver_app  | 2026-02-14 17:58:40,658 - aioslsk.network.network - INFO - successfully fulfilled ConnectToPeer request : ConnectToPeer.Response(username='fgp606', typ='P', ip='81.182.134.95', port=2234, ticket=3125412, privileged=False, obfuscated_port_amount=0, obfuscated_port=0)
+music_archiver_app  | 2026-02-14 17:58:40,729 - aioslsk.network.connection - INFO - [45.87.250.187:2234|P|beatrice.songbird2] connecting
+music_archiver_app  | 2026-02-14 17:58:40,733 - aioslsk.network.network - INFO - successfully fulfilled ConnectToPeer request : ConnectToPeer.Response(username='montr0n', typ='P', ip='199.204.82.200', port=35641, ticket=2081500, privileged=True, obfuscated_port_amount=0, obfuscated_port=0)
+music_archiver_app  | 2026-02-14 17:58:40,756 - aioslsk.network.network - INFO - successfully fulfilled ConnectToPeer request : ConnectToPeer.Response(username='beatrice.songbird2', typ='P', ip='45.87.250.187', port=2234, ticket=2222376, privileged=False, obfuscated_port_amount=0, obfuscated_port=0)
+music_archiver_app  | Error in on_result callback: 'filename'
+music_archiver_app  | Error in on_result callback: 'filename'
+music_archiver_app  | Error in on_result callback: 'filename'
+music_archiver_app  | 2026-02-14 17:58:41,033 - aioslsk.network.connection - INFO - [81.164.22.164:2234|P|cklmvdfbgn] connecting
+music_archiver_app  | 2026-02-14 17:58:41,168 - aioslsk.network.connection - INFO - [173.52.54.47:2234|P|g4b4g00l] connecting
+music_archiver_app  | 2026-02-14 17:58:41,168 - aioslsk.network.connection - INFO - [86.24.239.126:2235|P|Bald1e] connecting
+music_archiver_app  | 2026-02-14 17:58:41,214 - aioslsk.network.network - INFO - successfully fulfilled ConnectToPeer request : ConnectToPeer.Response(username='Bald1e', typ='P', ip='86.24.239.126', port=2235, ticket=1913728, privileged=False, obfuscated_port_amount=0, obfuscated_port=0)
+music_archiver_app  | 2026-02-14 17:58:41,262 - aioslsk.network.network - INFO - successfully fulfilled ConnectToPeer request : ConnectToPeer.Response(username='g4b4g00l', typ='P', ip='173.52.54.47', port=2234, ticket=268335, privileged=False, obfuscated_port_amount=0, obfuscated_port=0)
+music_archiver_app  | Error in on_result callback: 'filename'
+music_archiver_app  | 2026-02-14 17:58:41,311 - aioslsk.network.connection - INFO - [5.18.198.221:57959|P|haveac1gar] connecting
+music_archiver_app  | 2026-02-14 17:58:41,311 - aioslsk.network.connection - INFO - [146.70.186.126:2234|P|KrateDigga] connecting
+music_archiver_app  | 2026-02-14 17:58:41,311 - aioslsk.network.connection - INFO - [149.50.218.19:47020|P|call_me_pete] connecting
+music_archiver_app  | 2026-02-14 17:58:41,311 - aioslsk.network.connection - INFO - [145.40.190.6:45808|P|Hisnibs] connecting
+music_archiver_app  | 2026-02-14 17:58:41,341 - aioslsk.network.network - INFO - successfully fulfilled ConnectToPeer request : ConnectToPeer.Response(username='Hisnibs', typ='P', ip='145.40.190.6', port=45808, ticket=4500546, privileged=False, obfuscated_port_amount=0, obfuscated_port=0)
+music_archiver_app  | 2026-02-14 17:58:41,451 - aioslsk.network.connection - INFO - [84.240.59.239:2242|P|TauAs] connecting
+music_archiver_app  | 2026-02-14 17:58:41,507 - aioslsk.network.network - INFO - successfully fulfilled ConnectToPeer request : ConnectToPeer.Response(username='TauAs', typ='P', ip='84.240.59.239', port=2242, ticket=4501194, privileged=True, obfuscated_port_amount=0, obfuscated_port=0)
+music_archiver_app  | Error in on_result callback: 'filename'
+music_archiver_app  | Error in on_result callback: 'filename'
+music_archiver_app  | 2026-02-14 17:58:41,811 - aioslsk.network.connection - INFO - [85.15.102.227:1024|P|Credovi] connecting
+music_archiver_app  | 2026-02-14 17:58:42,041 - aioslsk.network.network - INFO - successfully fulfilled ConnectToPeer request : ConnectToPeer.Response(username='Credovi', typ='P', ip='85.15.102.227', port=1024, ticket=2847748, privileged=False, obfuscated_port_amount=0, obfuscated_port=0)
+music_archiver_app  | Error in on_result callback: 'filename'
+music_archiver_app  | Error in on_result callback: 'filename'
+music_archiver_app  | Error in on_result callback: 'filename'
+music_archiver_app  | 2026-02-14 17:58:43,888 - aioslsk.network.network - WARNING - failed to fulfill ConnectToPeer request : ConnectToPeer.Response(username='call_me_pete', typ='P', ip='149.50.218.19', port=47020, ticket=1998562, privileged=False, obfuscated_port_amount=0, obfuscated_port=0) : PeerConnectionError('failed connect on user request')
+music_archiver_app  | 2026-02-14 17:58:49,697 - aioslsk.network.upnp - INFO - found 0 IGD devices
+music_archiver_app  | 2026-02-14 17:58:49,697 - aioslsk.network.network - INFO - found 0 devices for UPnP port mapping
+music_archiver_app  | 2026-02-14 17:58:49,697 - aioslsk.network.network - INFO - UPnP: rechecking port mapping in 600 seconds
+music_archiver_app  | Search timed out or finished. Found 9 valid files
+music_archiver_app  | 2026-02-14 17:58:50,473 - aioslsk.network.network - WARNING - failed to fulfill ConnectToPeer request : ConnectToPeer.Response(username='jonny5', typ='P', ip='136.32.24.163', port=49152, ticket=1157844, privileged=False, obfuscated_port_amount=0, obfuscated_port=0) : PeerConnectionError('failed connect on user request')
+music_archiver_app  | 2026-02-14 17:58:50,606 - aioslsk.network.network - WARNING - failed to fulfill ConnectToPeer request : ConnectToPeer.Response(username='Jeremy', typ='P', ip='79.30.20.96', port=2234, ticket=3445302, privileged=False, obfuscated_port_amount=0, obfuscated_port=0) : PeerConnectionError('failed connect on user request')
+music_archiver_app  | 2026-02-14 17:58:51,035 - aioslsk.network.network - WARNING - failed to fulfill ConnectToPeer request : ConnectToPeer.Response(username='cklmvdfbgn', typ='P', ip='81.164.22.164', port=2234, ticket=2316, privileged=False, obfuscated_port_amount=0, obfuscated_port=0) : PeerConnectionError('failed connect on user request')
+music_archiver_app  | 2026-02-14 17:58:51,312 - aioslsk.network.network - WARNING - failed to fulfill ConnectToPeer request : ConnectToPeer.Response(username='haveac1gar', typ='P', ip='5.18.198.221', port=57959, ticket=1732250, privileged=False, obfuscated_port_amount=0, obfuscated_port=0) : PeerConnectionError('failed connect on user request')
+music_archiver_app  | 2026-02-14 17:58:51,312 - aioslsk.network.network - WARNING - failed to fulfill ConnectToPeer request : ConnectToPeer.Response(username='KrateDigga', typ='P', ip='146.70.186.126', port=2234, ticket=3016165, privileged=False, obfuscated_port_amount=0, obfuscated_port=0) : PeerConnectionError('failed connect on user request')
+music_archiver_app  | 2026-02-14 17:59:11,531 - asyncio - ERROR - Task exception was never retrieved
+music_archiver_app  | future: <Task finished name='indirect-connect-missingparts-D-6' coro=<Network._make_indirect_connection() done, defined at /usr/local/lib/python3.11/site-packages/aioslsk/network/network.py:850> exception=PeerConnectionError("indirect connection failed (username='missingparts', ticket=6)")>
+music_archiver_app  | Traceback (most recent call last):
+music_archiver_app  |   File "/usr/local/lib/python3.11/site-packages/aioslsk/network/network.py", line 900, in _make_indirect_connection
+music_archiver_app  |     raise PeerConnectionError(
+music_archiver_app  | aioslsk.exceptions.PeerConnectionError: indirect connection failed (username='missingparts', ticket=6)
+music_archiver_app  | 2026-02-14 17:59:12,776 - asyncio - ERROR - Task exception was never retrieved
+music_archiver_app  | future: <Task finished name='indirect-connect-kukusanto-D-9' coro=<Network._make_indirect_connection() done, defined at /usr/local/lib/python3.11/site-packages/aioslsk/network/network.py:850> exception=PeerConnectionError("indirect connection failed (username='kukusanto', ticket=9)")>
+music_archiver_app  | Traceback (most recent call last):
+music_archiver_app  |   File "/usr/local/lib/python3.11/site-packages/aioslsk/network/network.py", line 900, in _make_indirect_connection
+music_archiver_app  |     raise PeerConnectionError(
+music_archiver_app  | aioslsk.exceptions.PeerConnectionError: indirect connection failed (username='kukusanto', ticket=9)
+music_archiver_app  | 2026-02-14 17:59:14,199 - asyncio - ERROR - Task exception was never retrieved
+music_archiver_app  | future: <Task finished name='indirect-connect-YounesXD-D-5' coro=<Network._make_indirect_connection() done, defined at /usr/local/lib/python3.11/site-packages/aioslsk/network/network.py:850> exception=PeerConnectionError("indirect connection failed (username='YounesXD', ticket=5)")>
+music_archiver_app  | Traceback (most recent call last):
+music_archiver_app  |   File "/usr/local/lib/python3.11/site-packages/aioslsk/network/network.py", line 900, in _make_indirect_connection
+music_archiver_app  |     raise PeerConnectionError(
+music_archiver_app  | aioslsk.exceptions.PeerConnectionError: indirect connection failed (username='YounesXD', ticket=5)
+music_archiver_app  | 2026-02-14 17:59:22,401 - asyncio - ERROR - Task exception was never retrieved
+music_archiver_app  | future: <Task finished name='indirect-connect-jnyrad-D-4' coro=<Network._make_indirect_connection() done, defined at /usr/local/lib/python3.11/site-packages/aioslsk/network/network.py:850> exception=PeerConnectionError("indirect connection failed (username='jnyrad', ticket=4)")>
+music_archiver_app  | Traceback (most recent call last):
+music_archiver_app  |   File "/usr/local/lib/python3.11/site-packages/aioslsk/network/network.py", line 900, in _make_indirect_connection
+music_archiver_app  |     raise PeerConnectionError(
+music_archiver_app  | aioslsk.exceptions.PeerConnectionError: indirect connection failed (username='jnyrad', ticket=4)
+music_archiver_app  | 2026-02-14 17:59:36,075 - aioslsk.network.connection - INFO - [73.239.116.45:15159|P|Kalisto] connecting
+music_archiver_app  | 2026-02-14 17:59:36,240 - aioslsk.network.network - INFO - successfully fulfilled ConnectToPeer request : ConnectToPeer.Response(username='Kalisto', typ='P', ip='73.239.116.45', port=15159, ticket=30366, privileged=False, obfuscated_port_amount=0, obfuscated_port=0)
+music_archiver_app  | 2026-02-14 17:59:40,133 - asyncio - ERROR - Task exception was never retrieved
+music_archiver_app  | future: <Task finished name='indirect-connect-susanaestrada-D-7' coro=<Network._make_indirect_connection() done, defined at /usr/local/lib/python3.11/site-packages/aioslsk/network/network.py:850> exception=PeerConnectionError("indirect connection timed out (username='susanaestrada', ticket=7)")>
+music_archiver_app  | Traceback (most recent call last):
+music_archiver_app  |   File "/usr/local/lib/python3.11/site-packages/aioslsk/network/network.py", line 894, in _make_indirect_connection
+music_archiver_app  |     raise PeerConnectionError(
+music_archiver_app  | aioslsk.exceptions.PeerConnectionError: indirect connection timed out (username='susanaestrada', ticket=7)
+music_archiver_app  | 2026-02-14 17:59:40,133 - asyncio - ERROR - Task exception was never retrieved
+music_archiver_app  | future: <Task finished name='indirect-connect-iloveouterwilds-D-8' coro=<Network._make_indirect_connection() done, defined at /usr/local/lib/python3.11/site-packages/aioslsk/network/network.py:850> exception=PeerConnectionError("indirect connection timed out (username='iloveouterwilds', ticket=8)")>
+music_archiver_app  | Traceback (most recent call last):
+music_archiver_app  |   File "/usr/local/lib/python3.11/site-packages/aioslsk/network/network.py", line 894, in _make_indirect_connection
+music_archiver_app  |     raise PeerConnectionError(
+music_archiver_app  | aioslsk.exceptions.PeerConnectionError: indirect connection timed out (username='iloveouterwilds', ticket=8)
+music_archiver_app  | 2026-02-14 17:59:40,133 - asyncio - ERROR - Task exception was never retrieved
+music_archiver_app  | future: <Task finished name='indirect-connect-sedate8782-D-10' coro=<Network._make_indirect_connection() done, defined at /usr/local/lib/python3.11/site-packages/aioslsk/network/network.py:850> exception=PeerConnectionError("indirect connection timed out (username='sedate8782', ticket=10)")>
+music_archiver_app  | Traceback (most recent call last):
+music_archiver_app  |   File "/usr/local/lib/python3.11/site-packages/aioslsk/network/network.py", line 894, in _make_indirect_connection
+music_archiver_app  |     raise PeerConnectionError(
+music_archiver_app  | aioslsk.exceptions.PeerConnectionError: indirect connection timed out (username='sedate8782', ticket=10)
+music_archiver_app  | 2026-02-14 17:59:40,134 - asyncio - ERROR - Task exception was never retrieved
+music_archiver_app  | future: <Task finished name='indirect-connect-Jimb0-D-11' coro=<Network._make_indirect_connection() done, defined at /usr/local/lib/python3.11/site-packages/aioslsk/network/network.py:850> exception=PeerConnectionError("indirect connection timed out (username='Jimb0', ticket=11)")>
+music_archiver_app  | Traceback (most recent call last):
+music_archiver_app  |   File "/usr/local/lib/python3.11/site-packages/aioslsk/network/network.py", line 894, in _make_indirect_connection
+music_archiver_app  |     raise PeerConnectionError(
+music_archiver_app  | aioslsk.exceptions.PeerConnectionError: indirect connection timed out (username='Jimb0', ticket=11)

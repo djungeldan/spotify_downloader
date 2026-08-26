@@ -1,0 +1,98 @@
+#1 [internal] load local bake definitions
+#1 reading from stdin 554B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.07kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.11-slim
+#3 DONE 0.2s
+
+#4 [internal] load metadata for docker.io/library/node:20-slim
+#4 DONE 0.2s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 2B done
+#5 DONE 0.0s
+
+#6 [frontend-build 1/6] FROM docker.io/library/node:20-slim@sha256:c6585df72c34172bebd8d36abed961e231d7d3b5cee2e01294c4495e8a03f687
+#6 resolve docker.io/library/node:20-slim@sha256:c6585df72c34172bebd8d36abed961e231d7d3b5cee2e01294c4495e8a03f687 0.0s done
+#6 DONE 0.0s
+
+#7 [stage-1 1/7] FROM docker.io/library/python:3.11-slim@sha256:0b23cfb7425d065008b778022a17b1551c82f8b4866ee5a7a200084b7e2eafbf
+#7 resolve docker.io/library/python:3.11-slim@sha256:0b23cfb7425d065008b778022a17b1551c82f8b4866ee5a7a200084b7e2eafbf 0.0s done
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 9.85kB 0.0s done
+#8 DONE 0.0s
+
+#9 [frontend-build 2/6] WORKDIR /app/frontend
+#9 CACHED
+
+#10 [frontend-build 4/6] RUN npm install
+#10 CACHED
+
+#11 [frontend-build 3/6] COPY frontend/package.json frontend/package-lock.json* ./
+#11 CACHED
+
+#12 [stage-1 3/7] WORKDIR /app
+#12 CACHED
+
+#13 [stage-1 2/7] RUN apt-get update && apt-get install -y     ffmpeg     git     && rm -rf /var/lib/apt/lists/*
+#13 CACHED
+
+#14 [stage-1 4/7] COPY backend/requirements.txt .
+#14 CACHED
+
+#15 [stage-1 5/7] RUN pip install --no-cache-dir -r requirements.txt
+#15 CACHED
+
+#16 [frontend-build 5/6] COPY frontend/ ./
+#16 CACHED
+
+#17 [stage-1 6/7] COPY backend/ .
+#17 CACHED
+
+#18 [frontend-build 6/6] RUN npm run build
+#18 0.301 
+#18 0.301 > music-archiver-frontend@1.0.0 build
+#18 0.301 > tsc && vite build
+#18 0.301 
+#18 1.733 src/components/Dashboard.tsx(46,73): error TS2339: Property 'id' does not exist on type 'SearchResult'.
+#18 1.733 src/components/Dashboard.tsx(216,71): error TS2345: Argument of type '{ source: string; id: string; confidence: number; }' is not assignable to parameter of type 'SearchResult'.
+#18 1.733   Type '{ source: string; id: string; confidence: number; }' is missing the following properties from type 'SearchResult': filename, size, bitrate, metadata
+#18 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 2
+------
+ > [frontend-build 6/6] RUN npm run build:
+0.301 
+0.301 > music-archiver-frontend@1.0.0 build
+0.301 > tsc && vite build
+0.301 
+1.733 src/components/Dashboard.tsx(46,73): error TS2339: Property 'id' does not exist on type 'SearchResult'.
+1.733 src/components/Dashboard.tsx(216,71): error TS2345: Argument of type '{ source: string; id: string; confidence: number; }' is not assignable to parameter of type 'SearchResult'.
+1.733   Type '{ source: string; id: string; confidence: number; }' is missing the following properties from type 'SearchResult': filename, size, bitrate, metadata
+------
+Dockerfile:11
+
+--------------------
+
+   9 |     COPY frontend/ ./
+
+  10 |     # Build the React app
+
+  11 | >>> RUN npm run build
+
+  12 |     
+
+  13 |     # Stage 2: Setup Backend
+
+--------------------
+
+failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 2
+
+
+
+View build details: docker-desktop://dashboard/build/default/default/l5u7x6zq3f2bl50logc1f3y90
+

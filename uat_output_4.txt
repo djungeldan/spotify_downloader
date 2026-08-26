@@ -1,0 +1,17 @@
+[UAT] === Test 1: Search & Weighting ===
+[UAT] Importing playlist: https://open.spotify.com/playlist/4xNPSp175sQcPJ1237IhLY
+[UAT] Imported 185 tracks from 'N.S.66.BPNFARv1'
+[UAT] Triggering Search All...
+Found: 0/185. Soulseek #1: 0 (Time: 3s)Found: 9/185. Soulseek #1: 0 (Time: 9s)Found: 20/185. Soulseek #1: 0 (Time: 15s)Found: 27/185. Soulseek #1: 0 (Time: 21s)Found: 34/185. Soulseek #1: 0 (Time: 26s)Found: 40/185. Soulseek #1: 0 (Time: 33s)Found: 47/185. Soulseek #1: 0 (Time: 40s)Found: 53/185. Soulseek #1: 0 (Time: 46s)Found: 58/185. Soulseek #1: 0 (Time: 53s)Found: 61/185. Soulseek #1: 0 (Time: 60s)Found: 65/185. Soulseek #1: 0 (Time: 67s)Found: 70/185. Soulseek #1: 0 (Time: 72s)Found: 73/185. Soulseek #1: 0 (Time: 84s)Found: 75/185. Soulseek #1: 0 (Time: 106s)Found: 80/185. Soulseek #1: 0 (Time: 111s)Found: 86/185. Soulseek #1: 0 (Time: 117s)Found: 96/185. Soulseek #1: 0 (Time: 123s)Found: 101/185. Soulseek #1: 0 (Time: 128s)Found: 108/185. Soulseek #1: 0 (Time: 134s)Found: 115/185. Soulseek #1: 0 (Time: 140s)Found: 121/185. Soulseek #1: 0 (Time: 146s)Found: 127/185. Soulseek #1: 0 (Time: 152s)Found: 134/185. Soulseek #1: 0 (Time: 158s)Found: 140/185. Soulseek #1: 0 (Time: 164s)Found: 143/185. Soulseek #1: 0 (Time: 179s)Found: 150/185. Soulseek #1: 0 (Time: 185s)Found: 157/185. Soulseek #1: 0 (Time: 190s)Found: 165/185. Soulseek #1: 0 (Time: 196s)Found: 172/185. Soulseek #1: 0 (Time: 203s)Found: 178/185. Soulseek #1: 0 (Time: 212s)Found: 185/185. Soulseek #1: 0 (Time: 217s)
+[UAT] 
+All tracks found.
+[UAT] Soulseek was top result for 0/185 tracks.
+[UAT] === Test 2: Re-search Capabilities ===
+[UAT] Triggering Search All AGAIN...
+[UAT] PASSED: Re-search triggered successfully.
+[UAT] === Test 3: Manual Selection (Download simulated) ===
+[UAT] Manually selecting: Skepta - London (WrkMode Remix) (Source: soundcloud)
+[UAT] PASSED: Manual selection persisted.
+[UAT] === Test 4: Download Organization ===
+[UAT] PASSED: Download All triggered.
+[UAT] ALL SIMULATION TESTS PASSED.

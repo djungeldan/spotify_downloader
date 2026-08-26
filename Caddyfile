@@ -1,0 +1,12 @@
+{$DOMAIN_NAME:localhost} {
+    reverse_proxy app:3000
+
+    encode gzip zstd
+
+    # WebSocket support
+    @websockets {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @websockets app:3000
+}

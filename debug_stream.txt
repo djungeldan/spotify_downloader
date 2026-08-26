@@ -1,0 +1,38 @@
+Initializing Soulseek Provider...
+Connecting with user: scrantanamo
+Connected to Soulseek
+Successfully connected!
+Testing search with streaming...
+Starting Soulseek search for: Rick Astley
+[1.00s] Found: @@zvdzg/THE BOX/Music from laptop/MUSIC/From Samsung/Disco originals/compilation 80s italo disco- i love disco (9 cd)/cd7_03_rick astley  together forever.mp3 (Total: 1)
+[1.00s] Found: @@kclsm/Music/TUNEZ/youtubestuff/very_old_music/Rick Astley - Never Gonna Give You Up (Official Music Video).mp3 (Total: 2)
+[1.00s] Found: @@hnttf/2024 Music Collection/Juni 2024/Rick Astley - Never Gonna Give You Up - David S Take Control Edit.mp3 (Total: 3)
+[1.00s] Found: @@puclh/2025 Music Collection/Collections 2025/More 90's CD 1/118. Rick Astley - Cry For Help.mp3 (Total: 4)
+[1.00s] Found: @@lyhwr/J-Eurobeat music/Dancemania EURO CLASSICS/01 - Rick Astley - Whenever You Need Somebody.flac (Total: 5)
+[1.00s] Found: @@lbodc/Muziek/Unsorted/80'S/TimeLife 80's Collection - 23CDs (403 Songs)/Time Life - SOTE - The Late 80s Take Two/02 - Rick Astley - Together Forever.mp3 (Total: 6)
+[1.00s] Found: @@lbodc/Muziek/Unsorted/80'S/Various Artists - Modern 80's - The Best of Discopop/Various Artists - Modern 80's - The Best of Discopop Vol. 4 (1999)/CD1/02 - Rick Astley - Together Forever.flac (Total: 7)
+[1.00s] Found: @@zsttx/music/Napster/_Divers - Oldies & Inclassables/80's Master List Billboard/Rick Astley - Giving Up On Love (#38, 1989) {Big Hits '89}.flac (Total: 8)
+[1.00s] Found: @@zsttx/music/Napster/_Divers - Oldies & Inclassables/80's Master List Billboard/Rick Astley - It Would Take A Strong Strong Man [45-LP Version] (#10, 1988) {A List Disc 41}.flac (Total: 9)
+[1.00s] Found: @@zsttx/music/Napster/_Divers - Oldies & Inclassables/80's Master List Billboard/Rick Astley - Never Gonna Give You Up [45-LP Version] (#1, 1988) {Now That's What I Call Music UK 1987 Disc 1}.flac (Total: 10)
+[1.00s] Found: @@zsttx/music/Napster/_Divers - Oldies & Inclassables/80's Master List Billboard/Rick Astley - She Wants To Dance With Me [45-LP Version] (#6, 1989) {Turn It Up}.flac (Total: 11)
+[1.00s] Found: @@zsttx/music/Napster/_Divers - Oldies & Inclassables/80's Master List Billboard/Rick Astley - Together Forever [Lover's Leap Mix] (#1, 1988) {Whenever You Need Somebody}.flac (Total: 12)
+[1.00s] Found: @@bmcgy/My Music/R-U/R/Rick Astley/Never Gonna Give You Up.mp3 (Total: 13)
+[1.00s] Found: @@dhulb/00..MUSICA (Revisar)/mp3_tmp/Rick Astley - Never Gonna Give You Up (DRIIIFT Remix).mp3 (Total: 14)
+[1.00s] Found: @@mixav/music/1689203_RICK_ASTLEY__together_forever/1689203_RICK_ASTLEY__together_forever.mp3 (Total: 15)
+[1.00s] Found: @@mixav/music/ExiToS Vol.1/Rick Astley - Never Gonna Give You Up.mp3 (Total: 16)
+[1.00s] Found: @@mixav/music/Rick Astley - Never Gonna Give You Up/Rick Astley - Never Gonna Give You Up.mp3 (Total: 17)
+[1.00s] Found: @@mixav/music/rapidshare.com/80LONG_13/26 Rick Astley - Together forever (hot tracks).m4a (Total: 18)
+[1.00s] Found: @@mixav/music/rapidshare.com/80LONG_13/80LONG_13/26 Rick Astley - Together forever (hot tracks).m4a (Total: 19)
+[1.00s] Found: @@mixav/music/rapidshare.com/80XXL_2/14 Rick Astley - Hold me in your arms (xtnd).m4a (Total: 20)
+[1.00s] Found: @@mixav/music/rapidshare.com/80XXL_2/80XXL_2/14 Rick Astley - Hold me in your arms (xtnd).m4a (Total: 21)
+[1.00s] Found: Music/Rick Astley (English singer, songwriter and radio personality) [db92a151-1ac2-438b-bc43-b82e149ddd50]/Are We There Yet! (2023) [48b570dd-bba1-41b2-9683-bc722f64f82f]/01 - Dippin My Feet [2.0 FLAC 24bit 44.1kHz].flac (Total: 22)
+[1.00s] Found: Music/Rick Astley (English singer, songwriter and radio personality) [db92a151-1ac2-438b-bc43-b82e149ddd50]/Are We There Yet! (2023) [48b570dd-bba1-41b2-9683-bc722f64f82f]/02 - Letting Go [2.0 FLAC 24bit 44.1kHz].flac (Total: 23)
+[1.00s] Found: Music/Rick Astley (English singer, songwriter and radio personality) [db92a151-1ac2-438b-bc43-b82e149ddd50]/Are We There Yet! (2023) [48b570dd-bba1-41b2-9683-bc722f64f82f]/03 - Golden Hour [2.0 FLAC 24bit 44.1kHz].flac (Total: 24)
+[1.00s] Found: Music/Rick Astley (English singer, songwriter and radio personality) [db92a151-1ac2-438b-bc43-b82e149ddd50]/Are We There Yet! (2023) [48b570dd-bba1-41b2-9683-bc722f64f82f]/04 - Never Gonna Stop [2.0 FLAC 24bit 44.1kHz].flac (Total: 25)
+Reached 25 results, stopping search for Rick Astley
+Final Count: 25 results.
+Sample: @@zvdzg/THE BOX/Music from laptop/MUSIC/From Samsung/Disco originals/compilation 80s italo disco- i love disco (9 cd)/cd7_03_rick astley  together forever.mp3
+Testing download of first result...
+Downloading @@zvdzg\THE BOX\Music from laptop\MUSIC\From Samsung\Disco originals\compilation 80s italo disco- i love disco (9 cd)\cd7_03_rick astley  together forever.mp3 from Brother_funk
+Transfer queued: Transfer(username='Brother_funk', remote_path='@@zvdzg\\THE BOX\\Music from laptop\\MUSIC\\From Samsung\\Disco originals\\compilation 80s italo disco- i love disco (9 cd)\\cd7_03_rick astley  together forever.mp3', direction=TransferDirection.DOWNLOAD, local_path=None, state=QueuedState(Transfer(username='Brother_funk', remote_path='@@zvdzg\\THE BOX\\Music from laptop\\MUSIC\\From Samsung\\Disco originals\\compilation 80s italo disco- i love disco (9 cd)\\cd7_03_rick astley  together forever.mp3', direction=TransferDirection.DOWNLOAD)))
+Download initiated successfully!

@@ -1,0 +1,38 @@
+# Environment Variables (Secrets)
+.env
+
+# Python / Poetry
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+env/
+.pytest_cache/
+
+# Windows Binary Builds (FFmpeg)
+*.exe
+backend/ffmpeg.exe
+backend/ffprobe.exe
+backend/*.exe
+
+# Frontend / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.nx/
+coverage/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Downloads & Temp Zips
+*.zip
+DBT_*.zip
+temp/
+tmp/
+
+# Logs
+logs/
+*.log
