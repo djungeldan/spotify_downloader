@@ -363,30 +363,41 @@ function App() {
         let c = 0;
         let f = 0;
 
-        const promises = sessionData.tracks.map(async (track, index) => {
-            try {
-                const res = await fetch(`${API_BASE}/extract_track`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        session_id: sessionData.session_id,
-                        track_index: index,
-                        sc_oauth_token: localStorage.getItem('sc_oauth_token') || null
-                    })
-                });
+        const concurrencyLimit = 3;
+        let currentIndex = 0;
 
-                if (!res.ok) throw new Error("Failed to extract");
-                
-                const blob = await res.blob();
-                const filename = `${track.artist} - ${track.title}.mp3`.replace(/[/\\?%*:|"<>]/g, '-');
-                tracksFolder.file(filename, blob);
-                c++;
-            } catch (e) {
-                f++;
+        const downloadWorker = async () => {
+            while (currentIndex < sessionData.tracks.length) {
+                const index = currentIndex++;
+                const track = sessionData.tracks[index];
+                try {
+                    const res = await fetch(`${API_BASE}/extract_track`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            session_id: sessionData.session_id,
+                            track_index: index,
+                            sc_oauth_token: localStorage.getItem('sc_oauth_token') || null
+                        })
+                    });
+
+                    if (!res.ok) throw new Error("Failed to extract");
+                    
+                    const blob = await res.blob();
+                    const filename = `${track.artist} - ${track.title}.mp3`.replace(/[/\\?%*:|"<>]/g, '-');
+                    tracksFolder.file(filename, blob);
+                    c++;
+                } catch (e) {
+                    f++;
+                }
             }
-        });
+        };
 
-        await Promise.all(promises);
+        const workers = Array(Math.min(concurrencyLimit, sessionData.tracks.length))
+            .fill(null)
+            .map(() => downloadWorker());
+
+        await Promise.all(workers);
 
         setSession(prev => prev ? { ...prev, status: 'zipping' } : prev);
         setLogs(prev => [...prev, { timestamp: new Date().toLocaleTimeString(), message: "Generating ZIP file locally in browser...", level: 'info' }]);
