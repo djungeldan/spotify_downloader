@@ -8,9 +8,17 @@ from ..services.config import config_service
 router = APIRouter()
 
 
+import os
+
 class DownloadRequest(BaseModel):
     url: str
     spotify_token: Optional[str] = None
+    sc_oauth_token: Optional[str] = None
+    allow_long_tracks: bool = False
+
+class ExtractTrackRequest(BaseModel):
+    session_id: str
+    track_index: int
     sc_oauth_token: Optional[str] = None
 
 
@@ -33,7 +41,7 @@ async def start_download(request: DownloadRequest, background_tasks: BackgroundT
     try:
         # Clean up expired sessions first
         await manager.cleanup_expired_sessions()
-        session_id = await manager.start_session(request.url, request.spotify_token, request.sc_oauth_token)
+        session_id = await manager.start_session(request.url, request.spotify_token, request.sc_oauth_token, request.allow_long_tracks)
         return {"session_id": session_id}
     except HTTPException:
         raise
@@ -52,27 +60,50 @@ async def get_session_status(session_id: str):
     return session.to_dict()
 
 
-@router.get("/api/download/{session_id}/zip")
-async def download_zip(session_id: str):
-    """Download the completed zip file for a session."""
-    session = manager.get_session(session_id)
+@router.post("/api/extract_track")
+async def extract_track(request: ExtractTrackRequest, background_tasks: BackgroundTasks):
+    """Extract a single track's MP3 stream and delete it immediately after sending."""
+    session = manager.get_session(request.session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
-    if session.status != "complete" or not session.zip_path:
-        raise HTTPException(status_code=400, detail="Zip not ready yet")
+    
+    if request.track_index >= len(session.tracks) or request.track_index < 0:
+        raise HTTPException(status_code=400, detail="Invalid track index")
 
-    import os
-    if not os.path.exists(session.zip_path):
-        raise HTTPException(status_code=404, detail="Zip file not found")
+    track = session.tracks[request.track_index]
+    
+    # Download the track ephemerally
+    file_path = await manager.extract_single_track(session, track, request.track_index, request.sc_oauth_token)
+    
+    if not file_path or not os.path.exists(file_path):
+        # Broadcast failure to this track
+        session.failed += 1
+        await manager.ws_manager.broadcast({
+            "type": "track_error",
+            "session_id": session.session_id,
+            "track_index": request.track_index,
+            "track_title": track.get('title'),
+            "error": "Failed to extract MP3 stream"
+        })
+        raise HTTPException(status_code=500, detail="Failed to extract MP3 stream")
 
-    import re
-    safe_name = re.sub(r'[^\w\s-]', '', session.session_name).strip()[:50] or "download"
-    filename = f"{safe_name}.zip"
+    # Broadcast success to this track
+    session.completed += 1
+    await manager.ws_manager.broadcast({
+        "type": "track_complete",
+        "session_id": session.session_id,
+        "track_index": request.track_index,
+        "completed": session.completed
+    })
 
+    # Schedule deletion to keep disk space at exactly 0
+    background_tasks.add_task(os.remove, file_path)
+
+    # Return the file directly to the client as an MP3 attachment
     return FileResponse(
-        session.zip_path,
-        media_type="application/zip",
-        filename=filename,
+        file_path,
+        media_type="audio/mpeg",
+        headers={"Content-Disposition": f"attachment; filename=\"{os.path.basename(file_path)}\""}
     )
 
 

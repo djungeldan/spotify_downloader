@@ -22,6 +22,7 @@ class SpotifyService:
             client_secret=self.cfg["client_secret"],
             redirect_uri=self.cfg["redirect_uri"],
             scope="playlist-read-private playlist-read-collaborative user-library-read",
+            cache_handler=spotipy.cache_handler.MemoryCacheHandler()
         )
         return sp_oauth.get_authorize_url()
 
@@ -32,6 +33,7 @@ class SpotifyService:
             client_secret=self.cfg["client_secret"],
             redirect_uri=self.cfg["redirect_uri"],
             scope="playlist-read-private playlist-read-collaborative user-library-read",
+            cache_handler=spotipy.cache_handler.MemoryCacheHandler()
         )
         token_info = sp_oauth.get_access_token(code, as_dict=True)
         return {
@@ -47,6 +49,7 @@ class SpotifyService:
             client_secret=self.cfg["client_secret"],
             redirect_uri=self.cfg["redirect_uri"],
             scope="playlist-read-private playlist-read-collaborative user-library-read",
+            cache_handler=spotipy.cache_handler.MemoryCacheHandler()
         )
         token_info = sp_oauth.refresh_access_token(refresh_token)
         return {

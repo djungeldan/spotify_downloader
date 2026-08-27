@@ -116,7 +116,7 @@ class DownloadManager:
         except Exception as e:
             logger.debug(f"Failed to broadcast log: {e}")
 
-    async def start_session(self, url: str, spotify_token: Optional[str] = None, sc_oauth_token: Optional[str] = None) -> str:
+    async def start_session(self, url: str, spotify_token: Optional[str] = None, sc_oauth_token: Optional[str] = None, allow_long_tracks: bool = False) -> str:
         """
         Start a download session asynchronously. Returns session_id immediately.
         Progress and logs are streamed over WebSocket.
@@ -142,11 +142,11 @@ class DownloadManager:
             logger.warning(f"Initial WS broadcast exception (non-fatal): {e}")
 
         # Process URL resolution and downloads in background task
-        asyncio.create_task(self._process_session(session, url, spotify_token, sc_oauth_token))
+        asyncio.create_task(self._process_session(session, url, spotify_token, sc_oauth_token, allow_long_tracks))
 
         return session_id
 
-    async def _process_session(self, session: DownloadSession, url: str, spotify_token: Optional[str], sc_oauth_token: Optional[str] = None):
+    async def _process_session(self, session: DownloadSession, url: str, spotify_token: Optional[str], sc_oauth_token: Optional[str] = None, allow_long_tracks: bool = False):
         """Background handler for URL resolution and downloading."""
         try:
             tracks, session_name = await self._resolve_url(session, url, spotify_token, sc_oauth_token)
@@ -176,7 +176,7 @@ class DownloadManager:
         filtered_tracks = []
         for t in tracks:
             duration = t.get("duration")
-            if duration is not None:
+            if duration is not None and not allow_long_tracks:
                 try:
                     duration_val = float(duration)
                     if duration_val > 420:
@@ -219,8 +219,9 @@ class DownloadManager:
             "tracks": [{"title": t.get("title", "?"), "artist": t.get("artist", "?")} for t in tracks],
         })
 
-        # Start downloads
-        await self._download_all(session, sc_oauth_token)
+        # Client will start downloading tracks individually
+        session.status = "ready"
+        await self.send_log(session.session_id, "Ready for client extraction.", "info")
 
     async def _resolve_url(self, session: DownloadSession, url: str, spotify_token: Optional[str], sc_oauth_token: Optional[str] = None) -> tuple:
         """Resolve a URL to a list of tracks and a session name."""
@@ -298,96 +299,8 @@ class DownloadManager:
 
         raise ValueError("Unsupported URL format. Please provide a Spotify, SoundCloud, or YouTube link.")
 
-    async def _download_all(self, session: DownloadSession, sc_oauth_token: Optional[str] = None):
-        """Asynchronous concurrent download execution."""
-        # Limit to 5 simultaneous track downloads to prevent IP throttling/bans
-        semaphore = asyncio.Semaphore(5)
-
-        async def _download_task(i: int, track: Dict):
-            if session.status == "error":
-                return
-            
-            async with semaphore:
-                # Re-check error state after waiting in queue
-                if session.status == "error":
-                    return
-
-                await self.send_log(
-                    session.session_id,
-                    f"[{i+1}/{session.total}] Downloading: '{track.get('title')}' by {track.get('artist', 'Unknown')}",
-                    "info"
-                )
-
-                success = await self._download_single_track(session, track, i, sc_oauth_token)
-                if success:
-                    session.completed += 1
-                    await self.ws_manager.broadcast({
-                        "type": "track_complete",
-                        "session_id": session.session_id,
-                        "track_index": i,
-                        "completed": session.completed
-                    })
-                else:
-                    session.failed += 1
-                    await self.ws_manager.broadcast({
-                        "type": "track_error",
-                        "session_id": session.session_id,
-                        "track_index": i,
-                        "track_title": track.get('title'),
-                        "error": "Download failed"
-                    })
-
-                await self.ws_manager.broadcast({
-                    "type": "session_progress",
-                    "session_id": session.session_id,
-                    "completed": session.completed,
-                    "failed": session.failed,
-                    "total": session.total,
-                    "status": session.status,
-                })
-
-        # Spawn all track downloads simultaneously and wait for completion
-        tasks = [_download_task(i, track) for i, track in enumerate(session.tracks)]
-        await asyncio.gather(*tasks)
-
-        # Zipping phase
-        if session.completed > 0:
-            session.status = "zipping"
-            await self.send_log(session.session_id, "Creating ZIP archive of downloaded tracks...", "info")
-            await self.ws_manager.broadcast({
-                "type": "session_progress",
-                "session_id": session.session_id,
-                "completed": session.completed,
-                "failed": session.failed,
-                "total": session.total,
-                "status": "zipping",
-            })
-
-            zip_filename = f"DBT_{re.sub(r'[^a-zA-Z0-9_-]', '_', session.session_name)}_{session.session_id}.zip"
-            session.zip_path = os.path.join(tempfile.gettempdir(), zip_filename)
-
-            loop = asyncio.get_running_loop()
-            await loop.run_in_executor(None, self._create_zip, session.temp_dir, session.zip_path)
-
-            session.status = "complete"
-            await self.send_log(session.session_id, f"ZIP created successfully! Download ready ({session.completed} track(s)).", "success")
-        else:
-            session.status = "complete"
-            await self.send_log(session.session_id, "All track downloads failed.", "error")
-
-        await self.ws_manager.broadcast({
-            "type": "session_complete",
-            "session_id": session.session_id,
-            "has_zip": session.zip_path is not None,
-            "zip_filename": os.path.basename(session.zip_path) if session.zip_path else None,
-            "status": "complete",
-            "completed": session.completed,
-            "failed": session.failed,
-            "total": session.total,
-        })
-
-    async def _download_single_track(self, session: DownloadSession, track: Dict, track_index: int, sc_oauth_token: Optional[str] = None) -> bool:
-        """Download a single track using the appropriate provider."""
+    async def extract_single_track(self, session: DownloadSession, track: Dict, track_index: int, sc_oauth_token: Optional[str] = None) -> Optional[str]:
+        """Download a single track and return its ephemeral MP3 file path."""
         track_title = track.get("title", "Unknown Track")
 
         async def on_progress(info: Dict):
@@ -400,16 +313,19 @@ class DownloadManager:
                 "state": info.get("state", "downloading"),
             })
 
+        track_dir = os.path.join(session.temp_dir, f"track_{track_index}")
+        os.makedirs(track_dir, exist_ok=True)
+
         # Direct SoundCloud URL
         if "_sc_direct_url" in track:
             sc_url = track["_sc_direct_url"]
             if '/sets/' in sc_url:
                 await self.send_log(session.session_id, f"SoundCloud set link found, finding YouTube match for '{track_title}'", "info")
-                return await self._download_via_youtube_search(session, track, track_index, on_progress)
+                return await self._download_via_youtube_search(session, track, track_dir, track_index, on_progress)
 
             result = {"metadata": {"url": sc_url}, "download_link": sc_url}
             await self.send_log(session.session_id, f"Executing direct SoundCloud download for '{track_title}'...", "info")
-            success = await self.soundcloud_provider.download(result, session.temp_dir, progress_callback=on_progress, sc_oauth_token=sc_oauth_token)
+            success = await self.soundcloud_provider.download(result, track_dir, progress_callback=on_progress, sc_oauth_token=sc_oauth_token)
             if not success:
                 track_artist = track.get("artist", "")
                 await self.send_log(
@@ -420,7 +336,7 @@ class DownloadManager:
                 success = await self.soundcloud_provider.download_by_search(
                     track_artist,
                     track_title,
-                    session.temp_dir,
+                    track_dir,
                     progress_callback=on_progress,
                     sc_oauth_token=sc_oauth_token
                 )
@@ -430,28 +346,37 @@ class DownloadManager:
                     f"SoundCloud direct stream unavailable for '{track_title}'. Matching on YouTube...",
                     "warning"
                 )
-                return await self._download_via_youtube_search(session, track, track_index, on_progress)
-            return True
+                return await self._download_via_youtube_search(session, track, track_dir, track_index, on_progress)
+            
+            files = os.listdir(track_dir)
+            if files:
+                return os.path.join(track_dir, files[0])
+            return None
 
         # Direct YouTube URL
         if "_yt_direct_url" in track:
             yt_url = track["_yt_direct_url"]
             cmd = [
                 "yt-dlp", "-f", "bestaudio/best",
-                "--extract-audio",
+                "--extract-audio", "--audio-format", "mp3", "--audio-quality", "0",
                 "--embed-thumbnail", "--add-metadata", "--newline",
-                "-o", f"{session.temp_dir}/%(title)s.%(ext)s",
+                "-o", f"{track_dir}/%(title)s.%(ext)s",
                 yt_url,
             ]
             await self.send_log(session.session_id, f"Executing direct yt-dlp audio download from YouTube...", "info")
-            return await _run_ytdlp_with_progress(cmd, on_progress)
+            success = await _run_ytdlp_with_progress(cmd, on_progress)
+            if success:
+                files = os.listdir(track_dir)
+                if files:
+                    return os.path.join(track_dir, files[0])
+            return None
 
         # YouTube Search Fallback
-        return await self._download_via_youtube_search(session, track, track_index, on_progress)
+        return await self._download_via_youtube_search(session, track, track_dir, track_index, on_progress)
 
     async def _download_via_youtube_search(
-        self, session: DownloadSession, track: Dict, track_index: int, on_progress
-    ) -> bool:
+        self, session: DownloadSession, track: Dict, track_dir: str, track_index: int, on_progress
+    ) -> Optional[str]:
         """Search YouTube for a track using robust fallback queries and download the best match."""
         track_title = track.get("title", "Unknown")
         track_artist = track.get("artist", "")
@@ -486,12 +411,12 @@ class DownloadManager:
 
         if not results:
             await self.send_log(session.session_id, f"No YouTube results found for '{track_title}'", "warning")
-            return False
+            return None
 
         best = await self._pick_best_result(session.session_id, results, track_title)
         if not best:
             await self.send_log(session.session_id, f"No suitable YouTube match for '{track_title}'", "warning")
-            return False
+            return None
 
         matched_title = best.get("filename") or "YouTube video"
         video_id = best["metadata"]["id"]
@@ -503,11 +428,16 @@ class DownloadManager:
             "yt-dlp", "-f", "bestaudio/best",
             "--extract-audio", "--audio-format", "mp3", "--audio-quality", "0",
             "--embed-thumbnail", "--add-metadata", "--newline",
-            "-o", f"{session.temp_dir}/%(title)s.%(ext)s",
+            "-o", f"{track_dir}/%(title)s.%(ext)s",
             yt_url,
         ]
 
-        return await _run_ytdlp_with_progress(cmd, on_progress)
+        success = await _run_ytdlp_with_progress(cmd, on_progress)
+        if success:
+            files = os.listdir(track_dir)
+            if files:
+                return os.path.join(track_dir, files[0])
+        return None
 
     async def _pick_best_result(self, session_id: str, results: List[Dict], original_title: str) -> Optional[Dict]:
         """Pick best YouTube result while avoiding remix/cover/live mismatches."""
@@ -532,25 +462,6 @@ class DownloadManager:
 
         await self.send_log(session_id, f"All search results contained variant keywords; falling back to first match", "warning")
         return results[0] if results else None
-
-    def _create_zip(self, temp_dir: str, zip_path: str):
-        """Zip all downloaded files in the session's temp directory synchronously."""
-        files = []
-        for f in os.listdir(temp_dir):
-            filepath = os.path.join(temp_dir, f)
-            if os.path.isfile(filepath):
-                files.append(filepath)
-
-        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-            for filepath in files:
-                arcname = os.path.basename(filepath)
-                zf.write(filepath, arcname)
-
-        # Immediately purge the raw MP3 files to preserve ephemeral storage space
-        try:
-            shutil.rmtree(temp_dir)
-        except Exception as e:
-            logger.error(f"Failed to wipe ephemeral track storage in {temp_dir}: {e}")
 
     async def cleanup_expired_sessions(self):
         now = time.time()

@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import useWebSocket from 'react-use-websocket';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 // Types
 interface TrackInfo {
@@ -53,8 +55,10 @@ function App() {
     const [showScModal, setShowScModal] = useState(false);
     const [spotifyError, setSpotifyError] = useState('');
     const [globalError, setGlobalError] = useState('');
+    const [allowLongTracks, setAllowLongTracks] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const consoleEndRef = useRef<HTMLDivElement>(null);
+    const downloadStartedRef = useRef(false);
 
     // Auto-scroll console to bottom
     useEffect(() => {
@@ -244,6 +248,36 @@ function App() {
                 break;
 
             case 'session_error':
+                if (data.error && (data.error.includes('403') || data.error.includes('401') || data.error.toLowerCase().includes('token') || data.error.toLowerCase().includes('expired'))) {
+                    const rt = localStorage.getItem('spotify_refresh_token');
+                    if (rt) {
+                        fetch(`${API_BASE}/spotify/refresh`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ refresh_token: rt })
+                        }).then(res => {
+                            if (!res.ok) throw new Error('Refresh failed');
+                            return res.json();
+                        }).then(refreshData => {
+                            if (refreshData.access_token) {
+                                localStorage.setItem('spotify_access_token', refreshData.access_token);
+                                localStorage.setItem('spotify_refresh_token', refreshData.refresh_token || rt);
+                                setSpotifyToken(refreshData.access_token);
+                                setSpotifyRefreshToken(refreshData.refresh_token || rt);
+                                setGlobalError('Spotify session refreshed! Please try downloading again.');
+                            } else {
+                                throw new Error('Invalid refresh payload');
+                            }
+                        }).catch(() => {
+                            handleSpotifyLogout();
+                            setSpotifyError('Your Spotify session expired. Please sign in again.');
+                        });
+                    } else {
+                        handleSpotifyLogout();
+                        setSpotifyError('Your Spotify session expired. Please sign in again.');
+                    }
+                }
+
                 setSession(prev => {
                     if (prev) {
                         return { ...prev, status: 'error', errors: [{ track: '', error: data.error }] };
@@ -297,54 +331,33 @@ function App() {
             return;
         }
 
-        try {
-            const cleanUrl = url.trim();
-            const body: { url: string; spotify_token?: string; sc_oauth_token?: string } = { url: cleanUrl };
-            if (spotifyToken) body.spotify_token = spotifyToken;
-            if (scOAuthToken) body.sc_oauth_token = scOAuthToken;
+        setLogs([]);
+        setSession(null);
+        downloadStartedRef.current = false;
 
+        try {
             const res = await fetch(`${API_BASE}/download`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
+                body: JSON.stringify({
+                    url: url.trim(),
+                    spotify_token: spotifyToken,
+                    sc_oauth_token: scOAuthToken || null,
+                    allow_long_tracks: allowLongTracks
+                })
             });
 
+            const data = await res.json();
             if (!res.ok) {
-                let errorMsg = 'Download failed';
-                try {
-                    const err = await res.json();
-                    errorMsg = err.detail || errorMsg;
-                } catch {
-                    errorMsg = `Server error (${res.status} ${res.statusText})`;
-                }
-
-                if (isSpotify && errorMsg.includes('token')) {
-                    const newToken = await refreshSpotifyToken();
-                    if (newToken) {
-                        body.spotify_token = newToken;
-                        const retryRes = await fetch(`${API_BASE}/download`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(body),
-                        });
-                        if (retryRes.ok) {
-                            setUrl('');
-                            return;
-                        }
-                    }
-                    setSpotifyError('Spotify session expired. Please sign in again.');
-                    handleSpotifyLogout();
+                if (data.detail && data.detail.includes("Spotify")) {
+                    setSpotifyError(data.detail);
                 } else {
-                    setGlobalError(errorMsg);
+                    setGlobalError(data.detail || 'Failed to start download');
                 }
                 setIsSubmitting(false);
-                return;
             }
-
-            setUrl('');
-            // Session starts immediately via WebSocket
-        } catch (err) {
-            setGlobalError('Failed to start download. Is the server running?');
+        } catch (e) {
+            setGlobalError('Connection error to backend API');
             setIsSubmitting(false);
         }
     };
@@ -370,16 +383,54 @@ function App() {
         setSpotifyRefreshToken(null);
     };
 
-    // Download zip
-    const handleDownloadZip = () => {
-        if (!session) return;
-        const link = document.createElement('a');
-        link.href = `${API_BASE}/download/${session.session_id}/zip`;
-        link.download = session.zip_filename || 'download.zip';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    // Trigger client-side JSZip download loop
+    const downloadTracks = async (sessionData: SessionState) => {
+        const zip = new JSZip();
+        const tracksFolder = zip.folder(sessionData.session_name) || zip;
+        let c = 0;
+        let f = 0;
+
+        const promises = sessionData.tracks.map(async (track, index) => {
+            try {
+                const res = await fetch(`${API_BASE}/extract_track`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        session_id: sessionData.session_id,
+                        track_index: index,
+                        sc_oauth_token: localStorage.getItem('sc_oauth_token') || null
+                    })
+                });
+
+                if (!res.ok) throw new Error("Failed to extract");
+                
+                const blob = await res.blob();
+                const filename = `${track.artist} - ${track.title}.mp3`.replace(/[/\\?%*:|"<>]/g, '-');
+                tracksFolder.file(filename, blob);
+                c++;
+            } catch (e) {
+                f++;
+            }
+        });
+
+        await Promise.all(promises);
+
+        setSession(prev => prev ? { ...prev, status: 'zipping' } : prev);
+        setLogs(prev => [...prev, { timestamp: new Date().toLocaleTimeString(), message: "Generating ZIP file locally in browser...", level: 'info' }]);
+        
+        const content = await zip.generateAsync({ type: 'blob' });
+        saveAs(content, `DBT_${sessionData.session_name}.zip`);
+
+        setSession(prev => prev ? { ...prev, status: 'complete', completed: c, failed: f } : prev);
+        setLogs(prev => [...prev, { timestamp: new Date().toLocaleTimeString(), message: "Download complete!", level: 'success' }]);
     };
+
+    useEffect(() => {
+        if (session?.status === 'downloading' && !downloadStartedRef.current) {
+            downloadStartedRef.current = true;
+            downloadTracks(session);
+        }
+    }, [session?.status]);
 
     // Reset
     const handleNewDownload = () => {
@@ -387,6 +438,7 @@ function App() {
         setLogs([]);
         setGlobalError('');
         setSpotifyError('');
+        downloadStartedRef.current = false;
         setTimeout(() => inputRef.current?.focus(), 100);
     };
 
@@ -630,6 +682,18 @@ function App() {
                                     )}
                                 </button>
                             </div>
+                            
+                            <div className="mt-4 flex items-center justify-between">
+                                <label className="flex items-center gap-2 text-sm text-gray-400 hover:text-white cursor-pointer transition-colors">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={allowLongTracks}
+                                        onChange={(e) => setAllowLongTracks(e.target.checked)}
+                                        className="rounded border-gray-600 bg-gray-700 text-orange-500 focus:ring-orange-500/50"
+                                    />
+                                    <span>Allow tracks over 7 minutes</span>
+                                </label>
+                            </div>
 
                             {/* Supported sources */}
                             <div className="flex gap-4 mt-4 justify-center">
@@ -809,9 +873,22 @@ function App() {
                         {/* Action buttons */}
                         <div className="flex gap-3 justify-center mb-6">
                             {session.status === 'complete' && (
+                                <div className="mt-8 flex justify-center animate-fade-in">
+                                    <button
+                                        onClick={handleNewDownload}
+                                        className="px-8 py-3.5 rounded-2xl font-bold transition-all hover:scale-105 active:scale-95"
+                                        style={{
+                                            background: 'var(--bg-elevated)',
+                                            color: 'var(--text-primary)',
+                                            border: '1px solid var(--border)'
+                                        }}>
+                                        Download Another
+                                    </button>
+                                </div>
+                            )}
+                            {session.status === 'complete' && (
                                 <button
                                     id="download-zip-btn"
-                                    onClick={handleDownloadZip}
                                     className="px-8 py-3 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
                                     style={{
                                         background: 'linear-gradient(135deg, var(--accent), var(--accent-hover))',

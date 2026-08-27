@@ -3,6 +3,12 @@
 
     encode gzip zstd
 
+    # Explicitly enable automatic HTTPS via Let's Encrypt / ZeroSSL
+    # If DOMAIN_NAME is set, it provisions a public cert.
+    tls {
+        on_demand
+    }
+
     # WebSocket support
     @websockets {
         header Connection *Upgrade*
