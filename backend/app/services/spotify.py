@@ -92,15 +92,21 @@ class SpotifyService:
         tracks = []
         skipped = 0
         page = 0
+        first_item_logged = False
         while results:
             page += 1
             items = results.get('items', [])
-            logger.info(f"Playlist page {page}: {len(items)} items, total so far results['total']={results.get('total')}")
+            logger.info(f"Playlist page {page}: {len(items)} items, total={results.get('total')}")
             for item in items:
                 if item is None:
                     logger.warning("Skipping None item in playlist")
                     skipped += 1
                     continue
+                # Log the raw structure of the first item to diagnose issues
+                if not first_item_logged:
+                    first_item_logged = True
+                    logger.info(f"  FIRST ITEM KEYS: {list(item.keys())}")
+                    logger.info(f"  FIRST ITEM RAW: {str(item)[:500]}")
                 track = item.get('track')
                 item_type = item.get('type') or (track.get('type') if track else 'unknown')
                 logger.info(f"  item type='{item_type}' track={'NOT NULL' if track else 'NULL'} is_local={track.get('is_local') if track else 'N/A'}")
