@@ -403,7 +403,7 @@ function App() {
         setLogs(prev => [...prev, { timestamp: new Date().toLocaleTimeString(), message: "Generating ZIP file locally in browser...", level: 'info' }]);
         
         const content = await zip.generateAsync({ type: 'blob' });
-        saveAs(content, `Music_${sessionData.session_name}.zip`);
+        saveAs(content, `DBT_${sessionData.session_name}.zip`);
 
         setSession(prev => prev ? { ...prev, status: 'complete', completed: c, failed: f } : prev);
         setLogs(prev => [...prev, { timestamp: new Date().toLocaleTimeString(), message: "Download complete!", level: 'success' }]);
@@ -445,73 +445,52 @@ function App() {
             </div>
 
             {/* Header */}
-            <header className="relative z-10 flex items-center justify-between px-6 py-4"
+            <header className="relative z-10 flex items-center justify-end px-6 py-4"
                 style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-black"
-                        style={{
-                            background: 'linear-gradient(135deg, var(--accent), var(--accent-hover))',
-                            color: 'var(--bg-primary)',
-                            boxShadow: '0 4px 15px var(--accent-glow)',
-                        }}>
-                        A
-                    </div>
-                    <div>
-                        <h1 className="text-lg font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                            Audio Downloader
-                        </h1>
-                        <p className="text-[10px] font-medium tracking-widest uppercase" style={{ color: 'var(--text-muted)' }}>
-                            High Quality Music Downloads
-                        </p>
-                    </div>
-                </div>
-
                 {/* Header Auth buttons */}
                 <div className="flex items-center gap-3">
-                    {/* Advanced Auth button */}
+                    {/* SoundCloud Auth button */}
                     <button
                         onClick={() => setShowScModal(true)}
                         className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
                         style={{
-                            background: scOAuthToken ? 'rgba(var(--accent-rgb), 0.15)' : 'var(--accent)',
-                            color: scOAuthToken ? 'var(--accent)' : 'var(--bg-primary)',
-                            border: scOAuthToken ? '1px solid rgba(var(--accent-rgb), 0.3)' : 'none',
+                            background: scOAuthToken ? 'rgba(255, 85, 0, 0.15)' : 'rgba(255, 85, 0, 0.9)',
+                            color: scOAuthToken ? '#FF5500' : '#FFF',
+                            border: scOAuthToken ? '1px solid rgba(255, 85, 0, 0.3)' : 'none',
                         }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M1.175 12.225c-.046 0-.092.015-.123.046a.14.14 0 00-.046.123c.015.308.062.63.108.938.015.092.092.154.185.154h.015c.092 0 .169-.062.185-.154.046-.308.092-.63.092-.938 0-.077-.061-.138-.138-.154h-.277zm.985-.738c-.062 0-.108.03-.138.092-.123.477-.2.97-.246 1.462a.155.155 0 00.154.169h.308c.092 0 .169-.062.185-.154.046-.462.123-.923.231-1.385.015-.092-.046-.169-.139-.184h-.354zm1.092-.569c-.061 0-.123.046-.138.108-.2.723-.323 1.462-.369 2.215 0 .092.077.169.169.169h.323c.092 0 .169-.062.185-.154.046-.708.154-1.4.338-2.092.031-.092-.03-.185-.123-.2h-.385zm1.185-.4c-.062 0-.123.046-.139.108-.246.969-.385 1.954-.415 2.954 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.031-.954.169-1.892.4-2.815.031-.092-.031-.185-.123-.208l-.415-.054zm1.262-.231c-.062 0-.123.046-.138.108-.277 1.2-.415 2.43-.446 3.662 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.031-1.185.169-2.354.431-3.508.03-.092-.031-.184-.123-.207l-.416-.07zm1.338-.139c-.077 0-.138.046-.154.123-.292 1.4-.431 2.831-.446 4.262 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.015-1.385.154-2.754.431-4.108.015-.092-.046-.169-.138-.185l-.385-.108zm1.415-.046c-.077 0-.138.046-.154.123-.292 1.585-.415 3.2-.431 4.815 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.015-1.554.138-3.108.415-4.646.015-.092-.046-.169-.138-.185l-.384-.123zm1.616 4.908c0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.138-1.585.462-3.138.969-4.631.031-.092-.015-.185-.108-.215l-.385-.123c-.077-.031-.154.015-.184.092-.523 1.57-8.6 3.2-1.001 4.862zm15.431-1.354a3.868 3.868 0 00-3.692-2.738c-.354 0-.708.046-1.046.138a5.578 5.578 0 00-5.185-3.523 5.59 5.59 0 00-4.062 1.769c-.062.062-.092.154-.062.246.031.092.108.154.2.154h.415c.092 0 .169-.062.215-.138a4.776 4.776 0 013.292-1.292c2.185 0 4.077 1.492 4.585 3.6.031.123.138.2.261.185.492-.092.985-.077 1.462.046 1.831.462 3.123 2.092 3.108 3.985 0 2.246-1.815 4.062-4.062 4.062h-9.846c-.092 0-.169.077-.169.169v.338c0 .092.077.169.169.169h9.846c2.677 0 4.846-2.169 4.846-4.846 0-2.323-1.631-4.292-3.915-4.738z" />
                         </svg>
-                        {scOAuthToken ? 'Auth Active' : 'Advanced Auth'}
+                        {scOAuthToken ? 'SC Auth Active' : 'SoundCloud Auth'}
                     </button>
 
-                    {/* Platform auth button */}
+                    {/* Spotify auth button */}
                     {spotifyToken ? (
                         <button
                             onClick={handleSpotifyLogout}
                             className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
                             style={{
-                                background: 'rgba(var(--accent-rgb), 0.12)',
-                                color: 'var(--accent)',
-                                border: '1px solid rgba(var(--accent-rgb), 0.2)',
+                                background: 'rgba(29, 185, 84, 0.12)',
+                                color: 'var(--spotify-green)',
+                                border: '1px solid rgba(29, 185, 84, 0.2)',
                             }}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="20 6 9 17 4 12" />
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
                             </svg>
-                            Platform Connected
+                            Spotify Connected
                         </button>
                     ) : (
                         <button
                             onClick={handleSpotifySignIn}
                             className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
                             style={{
-                                background: 'transparent',
-                                color: 'var(--text-secondary)',
-                                border: '1px solid var(--border)',
+                                background: 'var(--spotify-green)',
+                                color: '#000',
                             }}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
                             </svg>
-                            Connect Platform
+                            Sign in with Spotify
                         </button>
                     )}
                 </div>
@@ -529,33 +508,32 @@ function App() {
                             }}>
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent)', color: 'var(--bg-primary)' }}>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#FF5500', color: '#FFF' }}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M1.175 12.225c-.046 0-.092.015-.123.046a.14.14 0 00-.046.123c.015.308.062.63.108.938.015.092.092.154.185.154h.015c.092 0 .169-.062.185-.154.046-.308.092-.63.092-.938 0-.077-.061-.138-.138-.154h-.277zm.985-.738c-.062 0-.108.03-.138.092-.123.477-.2.97-.246 1.462a.155.155 0 00.154.169h.308c.092 0 .169-.062.185-.154.046-.462.123-.923.231-1.385.015-.092-.046-.169-.139-.184h-.354zm1.092-.569c-.061 0-.123.046-.138.108-.2.723-.323 1.462-.369 2.215 0 .092.077.169.169.169h.323c.092 0 .169-.062.185-.154.046-.708.154-1.4.338-2.092.031-.092-.03-.185-.123-.2h-.385zm1.185-.4c-.062 0-.123.046-.139.108-.246.969-.385 1.954-.415 2.954 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.031-.954.169-1.892.4-2.815.031-.092-.031-.185-.123-.208l-.415-.054zm1.262-.231c-.062 0-.123.046-.138.108-.277 1.2-.415 2.43-.446 3.662 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.031-1.185.169-2.354.431-3.508.03-.092-.031-.184-.123-.207l-.416-.07zm1.338-.139c-.077 0-.138.046-.154.123-.292 1.4-.431 2.831-.446 4.262 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.015-1.385.154-2.754.431-4.108.015-.092-.046-.169-.138-.185l-.385-.108zm1.415-.046c-.077 0-.138.046-.154.123-.292 1.585-.415 3.2-.431 4.815 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.015-1.554.138-3.108.415-4.646.015-.092-.046-.169-.138-.185l-.384-.123zm1.616 4.908c0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.138-1.585.462-3.138.969-4.631.031-.092-.015-.185-.108-.215l-.385-.123c-.077-.031-.154.015-.184.092-.523 1.57-8.6 3.2-1.001 4.862zm15.431-1.354a3.868 3.868 0 00-3.692-2.738c-.354 0-.708.046-1.046.138a5.578 5.578 0 00-5.185-3.523 5.59 5.59 0 00-4.062 1.769c-.062.062-.092.154-.062.246.031.092.108.154.2.154h.415c.092 0 .169-.062.215-.138a4.776 4.776 0 013.292-1.292c2.185 0 4.077 1.492 4.585 3.6.031.123.138.2.261.185.492-.092.985-.077 1.462.046 1.831.462 3.123 2.092 3.108 3.985 0 2.246-1.815 4.062-4.062 4.062h-9.846c-.092 0-.169.077-.169.169v.338c0 .092.077.169.169.169h9.846c2.677 0 4.846-2.169 4.846-4.846 0-2.323-1.631-4.292-3.915-4.738z" />
                                         </svg>
                                     </div>
-                                    <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>Advanced Authentication</h3>
+                                    <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>SoundCloud OAuth Auth</h3>
                                 </div>
                                 <button onClick={() => setShowScModal(false)} className="text-gray-400 hover:text-white text-lg">✕</button>
                             </div>
 
                             <p className="text-xs mb-4 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                                Providing your platform <code className="text-[var(--accent)] bg-black/40 px-1 py-0.5 rounded">oauth_token</code> bypasses API rate-limits and stream extraction errors.
+                                Providing your SoundCloud <code className="text-orange-400 bg-black/40 px-1 py-0.5 rounded">oauth_token</code> bypasses all API rate-limits and 404 stream extraction errors.
                             </p>
 
                             <div className="space-y-3 mb-5 text-[11px] p-3 rounded-xl bg-black/30 border border-white/5">
-                                <div className="font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--accent)' }}>How to get your token (10 seconds):</div>
+                                <div className="font-semibold text-orange-400 uppercase tracking-wider text-[10px]">How to get your token (10 seconds):</div>
                                 <ol className="list-decimal list-inside space-y-1 text-gray-300">
-                                    <li>Open the <span className="underline" style={{ color: 'var(--accent)' }}>target platform</span> & log in.</li>
-                                    <li>Press <kbd className="bg-gray-800 px-1 rounded text-[10px]">F12</kbd> → <strong>Application</strong> tab → <strong>Cookies</strong>.</li>
-                                    <li>Copy the value of the <code style={{ color: 'var(--accent)' }}>oauth_token</code> cookie.</li>
+                                    <li>Open <a href="https://soundcloud.com" target="_blank" rel="noreferrer" className="underline text-orange-300 hover:text-orange-200">soundcloud.com</a> & log in.</li>
+                                    <li>Press <kbd className="bg-gray-800 px-1 rounded text-[10px]">F12</kbd> → <strong>Application</strong> tab → <strong>Cookies</strong> → soundcloud.com.</li>
+                                    <li>Copy the value of the <code className="text-orange-300">oauth_token</code> cookie.</li>
                                 </ol>
                             </div>
 
                             <div className="mb-5">
                                 <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                                    Platform OAuth Token
+                                    SoundCloud OAuth Token
                                 </label>
                                 <input
                                     type="text"
@@ -608,7 +586,7 @@ function App() {
                                 Download Music
                             </h2>
                             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                                Paste a music or playlist link below
+                                Paste a Spotify, SoundCloud, or YouTube link below
                             </p>
                         </div>
 
@@ -682,25 +660,37 @@ function App() {
                                 </label>
                             </div>
 
+                            {/* Supported sources */}
+                            <div className="flex gap-4 mt-4 justify-center">
+                                {['Spotify', 'SoundCloud', 'YouTube'].map(source => (
+                                    <span key={source} className="text-[10px] font-semibold tracking-wider uppercase px-2 py-1 rounded-md"
+                                        style={{
+                                            color: 'var(--text-muted)',
+                                            background: 'var(--accent-dim)',
+                                        }}>
+                                        {source}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
 
-                        {/* Platform prompt */}
+                        {/* Spotify prompt */}
                         {spotifyError && (
                             <div className="mt-4 p-4 rounded-xl text-sm animate-slide-down flex items-center gap-3"
                                 style={{
-                                    background: 'var(--bg-elevated)',
-                                    border: '1px solid var(--accent)',
-                                    color: 'var(--text-primary)',
+                                    background: 'rgba(29, 185, 84, 0.08)',
+                                    border: '1px solid rgba(29, 185, 84, 0.2)',
+                                    color: 'var(--spotify-green)',
                                 }}>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-orange-500">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
+                                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
                                 </svg>
                                 <span>{spotifyError}</span>
                                 {!spotifyToken && (
                                     <button onClick={handleSpotifySignIn}
                                         className="ml-auto px-3 py-1.5 rounded-lg text-xs font-bold shrink-0"
-                                        style={{ background: 'var(--accent)', color: 'var(--bg-primary)' }}>
-                                        Authenticate
+                                        style={{ background: 'var(--spotify-green)', color: '#000' }}>
+                                        Sign In
                                     </button>
                                 )}
                             </div>
@@ -964,12 +954,6 @@ function App() {
                 </div>
             </main>
 
-            {/* Footer */}
-            <footer className="relative z-10 text-center py-4">
-                <p className="text-[10px] tracking-widest uppercase" style={{ color: 'var(--text-muted)' }}>
-                    DBT Downloader • Best Quality MP3
-                </p>
-            </footer>
         </div >
     );
 }
