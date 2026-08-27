@@ -23,12 +23,12 @@ class WebSocketLogHandler(logging.Handler):
         try:
             msg = self.format(record)
             # Send to WebSocket manager in a non-blocking way
-            asyncio.create_task(self.ws_manager.broadcast({
-                'type': 'log',
-                'level': record.levelname,
-                'message': msg,
-                'timestamp': record.created
-            }))
+            # asyncio.create_task(self.ws_manager.broadcast({
+            #     'type': 'log',
+            #     'level': record.levelname,
+            #     'message': msg,
+            #     'timestamp': record.created
+            # }))
         except Exception:
             self.handleError(record)
 

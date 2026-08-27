@@ -79,7 +79,7 @@ async def extract_track(request: ExtractTrackRequest, background_tasks: Backgrou
     if not file_path or not os.path.exists(file_path):
         # Broadcast failure to this track
         session.failed += 1
-        await manager.ws_manager.broadcast({
+        await manager.ws_manager.broadcast_to_client(session.client_id, {
             "type": "track_error",
             "session_id": session.session_id,
             "track_index": request.track_index,
@@ -90,7 +90,7 @@ async def extract_track(request: ExtractTrackRequest, background_tasks: Backgrou
 
     # Broadcast success to this track
     session.completed += 1
-    await manager.ws_manager.broadcast({
+    await manager.ws_manager.broadcast_to_client(session.client_id, {
         "type": "track_complete",
         "session_id": session.session_id,
         "track_index": request.track_index,
