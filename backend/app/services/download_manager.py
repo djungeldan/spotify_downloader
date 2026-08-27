@@ -445,12 +445,12 @@ class DownloadManager:
 
         if not results:
             await self.send_log(session.session_id, f"No YouTube results found for '{track_title}'", "warning")
-            return None
+            raise Exception("No matching YouTube video found")
 
         best = await self._pick_best_result(session.session_id, results, track_title)
         if not best:
             await self.send_log(session.session_id, f"No suitable YouTube match for '{track_title}'", "warning")
-            return None
+            raise Exception("Skipped: Could not find an original track (only remixes/variants)")
 
         matched_title = best.get("filename") or "YouTube video"
         video_id = best["metadata"]["id"]
@@ -479,13 +479,13 @@ class DownloadManager:
     async def _pick_best_result(self, session_id: str, results: List[Dict], original_title: str) -> Optional[Dict]:
         """Pick best YouTube result while avoiding remix/cover/live mismatches."""
         original_lower = original_title.lower()
-        variant_keywords = ['remix', 'cover', 'live', 'instrumental', 'acoustic', 'karaoke', 'slowed', 'reverb', 'sped up', 'bass boosted']
+        variant_keywords = ['remix', 'remake', 'cover', 'live', 'instrumental', 'acoustic', 'karaoke', 'slowed', 'reverb', 'sped up', 'bass boosted', 'bootleg', 'edit', 'vip', 'dub', 'mix']
 
         for result in results:
             result_title = (result.get("filename") or "").lower()
             is_mismatch = False
             for keyword in variant_keywords:
-                if keyword in result_title and keyword not in original_lower:
+                if re.search(r'\b' + re.escape(keyword) + r'\b', result_title) and not re.search(r'\b' + re.escape(keyword) + r'\b', original_lower):
                     is_mismatch = True
                     await self.send_log(
                         session_id,
@@ -497,8 +497,8 @@ class DownloadManager:
             if not is_mismatch:
                 return result
 
-        await self.send_log(session_id, f"All search results contained variant keywords; falling back to first match", "warning")
-        return results[0] if results else None
+        await self.send_log(session_id, f"All search results contained variant keywords. Strict mode active: rejecting.", "error")
+        raise Exception("Skipped: Remix/Variant strictly rejected")
 
     async def cleanup_expired_sessions(self):
         now = time.time()

@@ -83,7 +83,18 @@ async def extract_track(request: ExtractTrackRequest, background_tasks: Backgrou
     })
 
     # Download the track ephemerally
-    file_path = await manager.extract_single_track(session, track, request.track_index, request.sc_oauth_token, request.youtube_cookie)
+    try:
+        file_path = await manager.extract_single_track(session, track, request.track_index, request.sc_oauth_token, request.youtube_cookie)
+    except Exception as e:
+        session.failed += 1
+        await manager.ws_manager.broadcast_to_client(session.client_id, {
+            "type": "track_error",
+            "session_id": session.session_id,
+            "track_index": request.track_index,
+            "track_title": track.get('title'),
+            "error": str(e)
+        })
+        raise HTTPException(status_code=500, detail=str(e))
     
     if not file_path or not os.path.exists(file_path):
         # Broadcast failure to this track
