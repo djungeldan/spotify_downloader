@@ -15,12 +15,14 @@ class DownloadRequest(BaseModel):
     client_id: str
     spotify_token: Optional[str] = None
     sc_oauth_token: Optional[str] = None
+    youtube_cookie: Optional[str] = None
     allow_long_tracks: bool = False
 
 class ExtractTrackRequest(BaseModel):
     session_id: str
     track_index: int
     sc_oauth_token: Optional[str] = None
+    youtube_cookie: Optional[str] = None
 
 
 class SpotifyCallbackRequest(BaseModel):
@@ -42,7 +44,7 @@ async def start_download(request: DownloadRequest, background_tasks: BackgroundT
     try:
         # Clean up expired sessions first
         await manager.cleanup_expired_sessions()
-        session_id = await manager.start_session(request.url, request.client_id, request.spotify_token, request.sc_oauth_token, request.allow_long_tracks)
+        session_id = await manager.start_session(request.url, request.client_id, request.spotify_token, request.sc_oauth_token, request.youtube_cookie, request.allow_long_tracks)
         return {"session_id": session_id}
     except HTTPException:
         raise
@@ -81,7 +83,7 @@ async def extract_track(request: ExtractTrackRequest, background_tasks: Backgrou
     })
 
     # Download the track ephemerally
-    file_path = await manager.extract_single_track(session, track, request.track_index, request.sc_oauth_token)
+    file_path = await manager.extract_single_track(session, track, request.track_index, request.sc_oauth_token, request.youtube_cookie)
     
     if not file_path or not os.path.exists(file_path):
         # Broadcast failure to this track

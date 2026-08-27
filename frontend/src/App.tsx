@@ -50,6 +50,10 @@ function App() {
         () => localStorage.getItem('sc_oauth_token') || ''
     );
     const [showScModal, setShowScModal] = useState(false);
+    const [youtubeCookie, setYoutubeCookie] = useState<string>(
+        () => localStorage.getItem('youtube_cookie') || ''
+    );
+    const [showYtModal, setShowYtModal] = useState(false);
     const [spotifyError, setSpotifyError] = useState('');
     const [globalError, setGlobalError] = useState('');
     const [allowLongTracks, setAllowLongTracks] = useState(false);
@@ -317,6 +321,7 @@ function App() {
                     url: url.trim(),
                     spotify_token: spotifyToken,
                     sc_oauth_token: scOAuthToken || null,
+                    youtube_cookie: youtubeCookie || null,
                     allow_long_tracks: allowLongTracks,
                     client_id: clientIdRef.current
                 })
@@ -378,7 +383,8 @@ function App() {
                         body: JSON.stringify({
                             session_id: sessionData.session_id,
                             track_index: index,
-                            sc_oauth_token: localStorage.getItem('sc_oauth_token') || null
+                            sc_oauth_token: localStorage.getItem('sc_oauth_token') || null,
+                            youtube_cookie: localStorage.getItem('youtube_cookie') || null
                         })
                     });
 
@@ -488,6 +494,21 @@ function App() {
                             <path d="M1.175 12.225c-.046 0-.092.015-.123.046a.14.14 0 00-.046.123c.015.308.062.63.108.938.015.092.092.154.185.154h.015c.092 0 .169-.062.185-.154.046-.308.092-.63.092-.938 0-.077-.061-.138-.138-.154h-.277zm.985-.738c-.062 0-.108.03-.138.092-.123.477-.2.97-.246 1.462a.155.155 0 00.154.169h.308c.092 0 .169-.062.185-.154.046-.462.123-.923.231-1.385.015-.092-.046-.169-.139-.184h-.354zm1.092-.569c-.061 0-.123.046-.138.108-.2.723-.323 1.462-.369 2.215 0 .092.077.169.169.169h.323c.092 0 .169-.062.185-.154.046-.708.154-1.4.338-2.092.031-.092-.03-.185-.123-.2h-.385zm1.185-.4c-.062 0-.123.046-.139.108-.246.969-.385 1.954-.415 2.954 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.031-.954.169-1.892.4-2.815.031-.092-.031-.185-.123-.208l-.415-.054zm1.262-.231c-.062 0-.123.046-.138.108-.277 1.2-.415 2.43-.446 3.662 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.031-1.185.169-2.354.431-3.508.03-.092-.031-.184-.123-.207l-.416-.07zm1.338-.139c-.077 0-.138.046-.154.123-.292 1.4-.431 2.831-.446 4.262 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.015-1.385.154-2.754.431-4.108.015-.092-.046-.169-.138-.185l-.385-.108zm1.415-.046c-.077 0-.138.046-.154.123-.292 1.585-.415 3.2-.431 4.815 0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.015-1.554.138-3.108.415-4.646.015-.092-.046-.169-.138-.185l-.384-.123zm1.616 4.908c0 .092.077.169.169.169h.338c.092 0 .169-.062.185-.154.138-1.585.462-3.138.969-4.631.031-.092-.015-.185-.108-.215l-.385-.123c-.077-.031-.154.015-.184.092-.523 1.57-8.6 3.2-1.001 4.862zm15.431-1.354a3.868 3.868 0 00-3.692-2.738c-.354 0-.708.046-1.046.138a5.578 5.578 0 00-5.185-3.523 5.59 5.59 0 00-4.062 1.769c-.062.062-.092.154-.062.246.031.092.108.154.2.154h.415c.092 0 .169-.062.215-.138a4.776 4.776 0 013.292-1.292c2.185 0 4.077 1.492 4.585 3.6.031.123.138.2.261.185.492-.092.985-.077 1.462.046 1.831.462 3.123 2.092 3.108 3.985 0 2.246-1.815 4.062-4.062 4.062h-9.846c-.092 0-.169.077-.169.169v.338c0 .092.077.169.169.169h9.846c2.677 0 4.846-2.169 4.846-4.846 0-2.323-1.631-4.292-3.915-4.738z" />
                         </svg>
                         {scOAuthToken ? 'SC Auth Active' : 'SoundCloud Auth'}
+                    </button>
+
+                    {/* YouTube Auth button */}
+                    <button
+                        onClick={() => setShowYtModal(true)}
+                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        style={{
+                            background: youtubeCookie ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 0, 0, 0.9)',
+                            color: youtubeCookie ? '#FF0000' : '#FFF',
+                            border: youtubeCookie ? '1px solid rgba(255, 0, 0, 0.3)' : 'none',
+                        }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                        {youtubeCookie ? 'YT Auth Active' : 'YouTube Auth'}
                     </button>
 
                     {/* Spotify auth button */}
@@ -600,6 +621,86 @@ function App() {
                                     onClick={() => setShowScModal(false)}
                                     className="px-5 py-2 rounded-xl text-xs font-bold text-black"
                                     style={{ background: '#FF5500' }}>
+                                    Save & Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+            {/* YouTube Auth Modal */}
+            {
+                showYtModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                        style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}>
+                        <div className="w-full max-w-md rounded-2xl p-6 shadow-2xl animate-fade-in"
+                            style={{
+                                background: 'var(--bg-surface)',
+                                border: '1px solid var(--border)',
+                            }}>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#FF0000', color: '#FFF' }}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                        </svg>
+                                    </div>
+                                    <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>YouTube Browser Auth</h3>
+                                </div>
+                                <button onClick={() => setShowYtModal(false)} className="text-gray-400 hover:text-white text-lg">✕</button>
+                            </div>
+
+                            <p className="text-xs mb-4 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                                Providing your YouTube <code className="text-red-400 bg-black/40 px-1 py-0.5 rounded">Cookie</code> bypasses the anti-bot "Sign in to confirm you're not a bot" restriction in yt-dlp.
+                            </p>
+
+                            <div className="space-y-3 mb-5 text-[11px] p-3 rounded-xl bg-black/30 border border-white/5">
+                                <div className="font-semibold text-red-400 uppercase tracking-wider text-[10px]">How to get your cookies:</div>
+                                <ol className="list-decimal list-inside space-y-1 text-gray-300">
+                                    <li>Open <a href="https://youtube.com" target="_blank" rel="noreferrer" className="underline text-red-300 hover:text-red-200">youtube.com</a> & log in.</li>
+                                    <li>Press <kbd className="bg-gray-800 px-1 rounded text-[10px]">F12</kbd> → <strong>Network</strong> tab (refresh page).</li>
+                                    <li>Click any request (e.g. <code>youtube.com</code>), go to <strong>Headers</strong>.</li>
+                                    <li>Scroll down to <strong>Request Headers</strong>, find <code>cookie:</code> and copy the entire string.</li>
+                                </ol>
+                            </div>
+
+                            <div className="mb-5">
+                                <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                                    Raw YouTube Cookie String
+                                </label>
+                                <textarea
+                                    value={youtubeCookie}
+                                    onChange={(e) => {
+                                        const val = e.target.value.trim();
+                                        setYoutubeCookie(val);
+                                        localStorage.setItem('youtube_cookie', val);
+                                    }}
+                                    placeholder="e.g. VISITOR_INFO1_LIVE=...; LOGIN_INFO=...; __Secure-3PAPISID=..."
+                                    className="w-full px-3.5 py-2.5 rounded-xl text-xs font-mono outline-none transition-all resize-none h-24"
+                                    style={{
+                                        background: 'var(--bg-elevated)',
+                                        border: '1px solid var(--border)',
+                                        color: 'var(--text-primary)',
+                                    }}
+                                />
+                            </div>
+
+                            <div className="flex gap-2 justify-end">
+                                {youtubeCookie && (
+                                    <button
+                                        onClick={() => {
+                                            setYoutubeCookie('');
+                                            localStorage.removeItem('youtube_cookie');
+                                        }}
+                                        className="px-4 py-2 rounded-xl text-xs font-semibold text-red-400 bg-red-500/10 hover:bg-red-500/20">
+                                        Clear Cookies
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => setShowYtModal(false)}
+                                    className="px-5 py-2 rounded-xl text-xs font-bold text-white"
+                                    style={{ background: '#FF0000' }}>
                                     Save & Close
                                 </button>
                             </div>
