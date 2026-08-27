@@ -53,6 +53,7 @@ function App() {
     const [spotifyError, setSpotifyError] = useState('');
     const [globalError, setGlobalError] = useState('');
     const [allowLongTracks, setAllowLongTracks] = useState(false);
+    const [isPlayingEasterEgg, setIsPlayingEasterEgg] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const consoleEndRef = useRef<HTMLDivElement>(null);
     const downloadStartedRef = useRef(false);
@@ -412,7 +413,17 @@ function App() {
     useEffect(() => {
         if (session?.status === 'downloading' && !downloadStartedRef.current) {
             downloadStartedRef.current = true;
-            downloadTracks(session);
+            
+            const hasSkrillex = session.tracks.some(t => 
+                t.title?.toLowerCase().includes('skrillex') || 
+                t.artist?.toLowerCase().includes('skrillex')
+            );
+
+            if (hasSkrillex) {
+                setIsPlayingEasterEgg(true);
+            } else {
+                downloadTracks(session);
+            }
         }
     }, [session?.status]);
 
@@ -436,6 +447,20 @@ function App() {
 
     return (
         <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg-primary)' }}>
+            {isPlayingEasterEgg && (
+                <div className="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+                    <video 
+                        src="/skrillee.mov" 
+                        autoPlay 
+                        onEnded={() => {
+                            setIsPlayingEasterEgg(false);
+                            if (session) downloadTracks(session);
+                        }}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
+            )}
+            
             {/* Background glow */}
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
                 <div className="absolute top-[-20%] left-[20%] w-[50%] h-[50%] rounded-full opacity-30"
