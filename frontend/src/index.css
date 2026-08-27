@@ -20,11 +20,10 @@
   --error: #ef5350;
   --warning: #ffb74d;
 
+  --accent-rgb: 179, 157, 219;
   --text-primary: #e8e0f0;
   --text-secondary: #9e8fb8;
   --text-muted: #6b5e82;
-
-  --spotify-green: #1db954;
 
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
