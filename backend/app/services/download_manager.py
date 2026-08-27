@@ -439,7 +439,7 @@ class DownloadManager:
         results = []
         for search_query in queries:
             await self.send_log(session.session_id, f"Searching YouTube: '{search_query}'", "info")
-            results = await self.youtube_provider.search(search_query)
+            results = await self.youtube_provider.search(search_query, cookies_file)
             if results:
                 break
 

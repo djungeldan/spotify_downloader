@@ -13,14 +13,19 @@ class YoutubeProvider(SearchProvider):
     def name(self) -> str:
         return "youtube"
 
-    async def search(self, query: str) -> List[Dict[str, Any]]:
+    async def search(self, query: str, cookies_file: Optional[str] = None) -> List[Dict[str, Any]]:
         cmd = [
             "yt-dlp",
             f"ytsearch5:{query}",
             "--dump-json",
             "--flat-playlist",
-            "--no-warnings"
+            "--no-warnings",
+            "--remote-components", "ejs:github",
+            "--no-js-runtimes",
+            "--js-runtimes", "node"
         ]
+        if cookies_file:
+            cmd.extend(["--cookies", cookies_file])
 
         try:
             process = await asyncio.create_subprocess_exec(
