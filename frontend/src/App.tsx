@@ -444,15 +444,16 @@ function App() {
                     style={{ background: 'radial-gradient(circle, rgba(179,157,219,0.1) 0%, transparent 70%)' }} />
             </div>
 
-            {/* Header */}
-            <header className="relative z-10 flex items-center justify-end px-6 py-4"
-                style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                {/* Header Auth buttons */}
-                <div className="flex items-center gap-3">
+            {/* Floating Auth Panel */}
+            <div className="fixed bottom-6 right-6 z-50 group flex flex-col items-end">
+                <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-4 shadow-2xl mb-4 translate-y-2 opacity-0 pointer-events-none group-hover:translate-y-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-all flex flex-col gap-3 w-max">
+                    <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-1">
+                        Log in to services
+                    </div>
                     {/* SoundCloud Auth button */}
                     <button
                         onClick={() => setShowScModal(true)}
-                        className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
                         style={{
                             background: scOAuthToken ? 'rgba(255, 85, 0, 0.15)' : 'rgba(255, 85, 0, 0.9)',
                             color: scOAuthToken ? '#FF5500' : '#FFF',
@@ -468,7 +469,7 @@ function App() {
                     {spotifyToken ? (
                         <button
                             onClick={handleSpotifyLogout}
-                            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
+                            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:opacity-80"
                             style={{
                                 background: 'rgba(29, 185, 84, 0.12)',
                                 color: 'var(--spotify-green)',
@@ -482,7 +483,7 @@ function App() {
                     ) : (
                         <button
                             onClick={handleSpotifySignIn}
-                            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
                             style={{
                                 background: 'var(--spotify-green)',
                                 color: '#000',
@@ -494,7 +495,13 @@ function App() {
                         </button>
                     )}
                 </div>
-            </header>
+                <button className="w-12 h-12 rounded-full bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-secondary)] flex items-center justify-center shadow-lg hover:text-[var(--text-primary)] hover:border-[var(--accent)] transition-all">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </button>
+            </div>
 
             {/* SoundCloud Auth Modal */}
             {
@@ -581,14 +588,6 @@ function App() {
                 {!session ? (
                     /* Input state */
                     <div className="w-full max-w-xl animate-fade-in">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-extrabold mb-3 tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                                Download Music
-                            </h2>
-                            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                                Paste a Spotify, SoundCloud, or YouTube link below
-                            </p>
-                        </div>
 
                         {/* Main input box */}
                         <div className="rounded-2xl p-6"
