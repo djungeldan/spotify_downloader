@@ -391,7 +391,7 @@ class DownloadManager:
                 "yt-dlp", "-f", "bestaudio/best",
                 "--remote-components", "ejs:github", "--no-js-runtimes", "--js-runtimes", "node",
                 "--extract-audio", "--audio-format", "mp3", "--audio-quality", "0",
-                "--embed-thumbnail", "--add-metadata", "--newline", "--force-ipv6",
+                "--embed-thumbnail", "--add-metadata", "--newline",
                 "-o", f"{track_dir}/%(title)s.%(ext)s",
             ]
             if cookies_file:
@@ -462,7 +462,7 @@ class DownloadManager:
             "yt-dlp", "-f", "bestaudio/best",
             "--remote-components", "ejs:github", "--no-js-runtimes", "--js-runtimes", "node",
             "--extract-audio", "--audio-format", "mp3", "--audio-quality", "0",
-            "--embed-thumbnail", "--add-metadata", "--newline", "--force-ipv6",
+            "--embed-thumbnail", "--add-metadata", "--newline",
             "-o", f"{track_dir}/%(title)s.%(ext)s",
         ]
         if cookies_file:
