@@ -185,7 +185,8 @@ class DownloadManager:
         filtered_tracks = []
         for t in tracks:
             duration = t.get("duration")
-            if duration is not None and not allow_long_tracks:
+            is_local = t.get("is_local", False)
+            if duration is not None and not allow_long_tracks and not is_local:
                 try:
                     duration_val = float(duration)
                     if duration_val > 420:

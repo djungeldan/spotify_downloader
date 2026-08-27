@@ -90,18 +90,27 @@ class SpotifyService:
         results = sp.playlist_items(playlist_id, additional_types=['track'])
 
         tracks = []
+        skipped = 0
         while results:
             for item in results['items']:
                 track = item.get('track')
                 if not track:
+                    skipped += 1
                     continue
-                tracks.append(self._format_track(track))
+                # Include local files — they have name/artists but no ID
+                # is_local=True tracks are searchable by title+artist on SoundCloud
+                try:
+                    tracks.append(self._format_track(track))
+                except Exception:
+                    skipped += 1
+                    continue
 
             if results['next']:
                 results = sp.next(results)
             else:
                 break
 
+        logger.info(f"Playlist '{playlist_name}': {len(tracks)} tracks loaded, {skipped} skipped (unavailable/null)")
         return {"name": playlist_name, "tracks": tracks}
 
     def get_artist_top_tracks(self, artist_url: str, token: str) -> Dict:
@@ -164,13 +173,17 @@ class SpotifyService:
 
     def _format_track(self, track: Dict) -> Dict:
         """Format a Spotify API track to our standard format."""
+        duration_ms = track.get('duration_ms') or 0
+        artists = track.get('artists') or []
+        album = track.get('album') or {}
         return {
-            "id": track['id'],
-            "title": track['name'],
-            "artist": track['artists'][0]['name'] if track.get('artists') else "Unknown",
-            "album": track['album']['name'] if track.get('album') else "",
-            "duration": track['duration_ms'] / 1000,
+            "id": track.get('id'),
+            "title": track.get('name', 'Unknown'),
+            "artist": artists[0]['name'] if artists else "Unknown",
+            "album": album.get('name', ''),
+            "duration": duration_ms / 1000,
             "isrc": track.get('external_ids', {}).get('isrc'),
+            "is_local": track.get('is_local', False),
         }
 
     def resolve_url(self, url: str, token: str) -> Dict:
