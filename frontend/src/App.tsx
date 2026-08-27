@@ -419,7 +419,7 @@ function App() {
     };
 
     useEffect(() => {
-        if (session?.status === 'downloading' && !downloadStartedRef.current) {
+        if (session?.status === 'downloading' && session.tracks.length > 0 && !downloadStartedRef.current) {
             downloadStartedRef.current = true;
             
             const hasSkrillex = session.tracks.some(t => 
@@ -433,7 +433,7 @@ function App() {
                 downloadTracks(session);
             }
         }
-    }, [session?.status]);
+    }, [session?.status, session?.tracks.length]);
 
     // Reset
     const handleNewDownload = () => {
