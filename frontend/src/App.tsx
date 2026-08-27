@@ -46,9 +46,6 @@ function App() {
     const [spotifyToken, setSpotifyToken] = useState<string | null>(
         () => localStorage.getItem('spotify_access_token')
     );
-    const [spotifyRefreshToken, setSpotifyRefreshToken] = useState<string | null>(
-        () => localStorage.getItem('spotify_refresh_token')
-    );
     const [scOAuthToken, setScOAuthToken] = useState<string>(
         () => localStorage.getItem('sc_oauth_token') || ''
     );
@@ -93,7 +90,6 @@ function App() {
                         localStorage.setItem('spotify_access_token', data.access_token);
                         localStorage.setItem('spotify_refresh_token', data.refresh_token || '');
                         setSpotifyToken(data.access_token);
-                        setSpotifyRefreshToken(data.refresh_token || null);
                         setSpotifyError('');
                     }
                 })
@@ -264,7 +260,6 @@ function App() {
                                 localStorage.setItem('spotify_access_token', refreshData.access_token);
                                 localStorage.setItem('spotify_refresh_token', refreshData.refresh_token || rt);
                                 setSpotifyToken(refreshData.access_token);
-                                setSpotifyRefreshToken(refreshData.refresh_token || rt);
                                 setGlobalError('Spotify session refreshed! Please try downloading again.');
                             } else {
                                 throw new Error('Invalid refresh payload');
@@ -291,30 +286,7 @@ function App() {
         }
     }, []);
 
-    // Refresh Spotify token
-    const refreshSpotifyToken = async (): Promise<string | null> => {
-        if (!spotifyRefreshToken) return null;
-        try {
-            const res = await fetch(`${API_BASE}/spotify/refresh`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ refresh_token: spotifyRefreshToken }),
-            });
-            const data = await res.json();
-            if (data.access_token) {
-                localStorage.setItem('spotify_access_token', data.access_token);
-                if (data.refresh_token) {
-                    localStorage.setItem('spotify_refresh_token', data.refresh_token);
-                    setSpotifyRefreshToken(data.refresh_token);
-                }
-                setSpotifyToken(data.access_token);
-                return data.access_token;
-            }
-        } catch (e) {
-            console.error('Token refresh failed:', e);
-        }
-        return null;
-    };
+
 
     // Handle download
     const handleDownload = async () => {
@@ -382,7 +354,6 @@ function App() {
         localStorage.removeItem('spotify_access_token');
         localStorage.removeItem('spotify_refresh_token');
         setSpotifyToken(null);
-        setSpotifyRefreshToken(null);
     };
 
     // Trigger client-side JSZip download loop
