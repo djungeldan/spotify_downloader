@@ -17,6 +17,7 @@ class DownloadRequest(BaseModel):
     sc_oauth_token: Optional[str] = None
     youtube_cookie: Optional[str] = None
     allow_long_tracks: bool = False
+    strict_mode: bool = True
 
 class ExtractTrackRequest(BaseModel):
     session_id: str
@@ -44,7 +45,7 @@ async def start_download(request: DownloadRequest, background_tasks: BackgroundT
     try:
         # Clean up expired sessions first
         await manager.cleanup_expired_sessions()
-        session_id = await manager.start_session(request.url, request.client_id, request.spotify_token, request.sc_oauth_token, request.youtube_cookie, request.allow_long_tracks)
+        session_id = await manager.start_session(request.url, request.client_id, request.spotify_token, request.sc_oauth_token, request.youtube_cookie, request.allow_long_tracks, request.strict_mode)
         return {"session_id": session_id}
     except HTTPException:
         raise

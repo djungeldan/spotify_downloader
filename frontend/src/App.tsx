@@ -57,6 +57,7 @@ function App() {
     const [spotifyError, setSpotifyError] = useState('');
     const [globalError, setGlobalError] = useState('');
     const [allowLongTracks, setAllowLongTracks] = useState(false);
+    const [strictMode, setStrictMode] = useState(true);
     const [isPlayingEasterEgg, setIsPlayingEasterEgg] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const consoleEndRef = useRef<HTMLDivElement>(null);
@@ -323,6 +324,7 @@ function App() {
                     sc_oauth_token: scOAuthToken || null,
                     youtube_cookie: youtubeCookie || null,
                     allow_long_tracks: allowLongTracks,
+                    strict_mode: strictMode,
                     client_id: clientIdRef.current
                 })
             });
@@ -782,6 +784,15 @@ function App() {
                                         className="rounded border-gray-600 bg-gray-700 text-orange-500 focus:ring-orange-500/50"
                                     />
                                     <span>Allow tracks over 7 minutes</span>
+                                </label>
+                                <label className="flex items-center gap-2 text-sm text-gray-400 hover:text-white cursor-pointer transition-colors" title="Strictly enforce original track downloads (skip remixes/edits)">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={strictMode}
+                                        onChange={(e) => setStrictMode(e.target.checked)}
+                                        className="rounded border-gray-600 bg-gray-700 text-orange-500 focus:ring-orange-500/50"
+                                    />
+                                    <span>Strict Mode (Reject Remixes)</span>
                                 </label>
                             </div>
 
