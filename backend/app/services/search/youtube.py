@@ -22,7 +22,8 @@ class YoutubeProvider(SearchProvider):
             "--no-warnings",
             "--remote-components", "ejs:github",
             "--no-js-runtimes",
-            "--js-runtimes", "node"
+            "--js-runtimes", "node",
+            "--force-ipv6"
         ]
         if cookies_file:
             cmd.extend(["--cookies", cookies_file])
@@ -81,6 +82,7 @@ class YoutubeProvider(SearchProvider):
             "--embed-thumbnail",          # Embed album art
             "--add-metadata",             # Embed ID3 tags
             "--newline",                  # Flush progress lines immediately
+            "--force-ipv6",               # Bypass IPv4 blocks
             "-o", f"{output_path}/%(title)s.%(ext)s",
             url
         ]
