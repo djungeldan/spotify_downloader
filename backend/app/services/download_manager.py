@@ -23,19 +23,24 @@ SESSION_TIMEOUT_SECS = 1800
 
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: List[WebSocket] = []
+        self.active_connections: Dict[str, List[WebSocket]] = {}
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket, client_id: str):
         await websocket.accept()
-        self.active_connections.append(websocket)
+        if client_id not in self.active_connections:
+            self.active_connections[client_id] = []
+        self.active_connections[client_id].append(websocket)
 
     def disconnect(self, websocket: WebSocket):
-        if websocket in self.active_connections:
-            self.active_connections.remove(websocket)
+        for client_id, conns in self.active_connections.items():
+            if websocket in conns:
+                conns.remove(websocket)
 
-    async def broadcast(self, message: Dict):
+    async def broadcast_to_client(self, client_id: str, message: Dict):
+        if client_id not in self.active_connections:
+            return
         dead = []
-        for conn in list(self.active_connections):
+        for conn in list(self.active_connections[client_id]):
             try:
                 await conn.send_json(message)
             except Exception as e:
@@ -48,8 +53,9 @@ class ConnectionManager:
 class DownloadSession:
     """Represents a single download session (one user request)."""
 
-    def __init__(self, session_id: str, session_name: str = "Resolving..."):
+    def __init__(self, session_id: str, client_id: str, session_name: str = "Resolving..."):
         self.session_id = session_id
+        self.client_id = client_id
         self.session_name = session_name
         self.tracks: List[Dict] = []
         self.total = 0
@@ -112,11 +118,13 @@ class DownloadManager:
             logger.info(f"[Session {session_id}] {message}")
 
         try:
-            await self.ws_manager.broadcast(log_entry)
+            session = self.get_session(session_id)
+            if session:
+                await self.ws_manager.broadcast_to_client(session.client_id, log_entry)
         except Exception as e:
             logger.debug(f"Failed to broadcast log: {e}")
 
-    async def start_session(self, url: str, spotify_token: Optional[str] = None, sc_oauth_token: Optional[str] = None, allow_long_tracks: bool = False) -> str:
+    async def start_session(self, url: str, client_id: str, spotify_token: Optional[str] = None, sc_oauth_token: Optional[str] = None, allow_long_tracks: bool = False) -> str:
         """
         Start a download session asynchronously. Returns session_id immediately.
         Progress and logs are streamed over WebSocket.
@@ -124,12 +132,12 @@ class DownloadManager:
         session_id = str(uuid.uuid4())[:8]
         url = url.strip()
 
-        session = DownloadSession(session_id, "Resolving URL...")
+        session = DownloadSession(session_id, client_id, "Resolving URL...")
         self.sessions[session_id] = session
 
         try:
             # Broadcast session start immediately
-            await self.ws_manager.broadcast({
+            await self.ws_manager.broadcast_to_client(client_id, {
                 "type": "session_start",
                 "session_id": session_id,
                 "session_name": session.session_name,
@@ -154,7 +162,7 @@ class DownloadManager:
             session.status = "error"
             session.errors.append({"track": url, "error": str(e)})
             await self.send_log(session.session_id, f"URL resolution failed: {str(e)}", "error")
-            await self.ws_manager.broadcast({
+            await self.ws_manager.broadcast_to_client(session.client_id, {
                 "type": "session_error",
                 "session_id": session.session_id,
                 "error": str(e),
@@ -165,7 +173,7 @@ class DownloadManager:
             session.status = "error"
             session.errors.append({"track": url, "error": "No tracks found"})
             await self.send_log(session.session_id, "No downloadable tracks found for this URL", "error")
-            await self.ws_manager.broadcast({
+            await self.ws_manager.broadcast_to_client(session.client_id, {
                 "type": "session_error",
                 "session_id": session.session_id,
                 "error": "No tracks found for this URL",
@@ -192,7 +200,7 @@ class DownloadManager:
             session.status = "error"
             session.errors.append({"track": "All", "error": "All tracks exceeded 7-minute duration limit"})
             await self.send_log(session.session_id, "No downloadable tracks remain after duration filtering", "error")
-            await self.ws_manager.broadcast({
+            await self.ws_manager.broadcast_to_client(session.client_id, {
                 "type": "session_error",
                 "session_id": session.session_id,
                 "error": "All tracks exceeded 7-minute duration limit",
@@ -211,7 +219,7 @@ class DownloadManager:
             "success"
         )
 
-        await self.ws_manager.broadcast({
+        await self.ws_manager.broadcast_to_client(session.client_id, {
             "type": "session_resolved",
             "session_id": session.session_id,
             "session_name": session_name,
@@ -304,7 +312,7 @@ class DownloadManager:
         track_title = track.get("title", "Unknown Track")
 
         async def on_progress(info: Dict):
-            await self.ws_manager.broadcast({
+            await self.ws_manager.broadcast_to_client(session.client_id, {
                 "type": "track_progress",
                 "session_id": session.session_id,
                 "track_index": track_index,

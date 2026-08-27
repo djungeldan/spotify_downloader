@@ -12,6 +12,7 @@ import os
 
 class DownloadRequest(BaseModel):
     url: str
+    client_id: str
     spotify_token: Optional[str] = None
     sc_oauth_token: Optional[str] = None
     allow_long_tracks: bool = False
@@ -41,7 +42,7 @@ async def start_download(request: DownloadRequest, background_tasks: BackgroundT
     try:
         # Clean up expired sessions first
         await manager.cleanup_expired_sessions()
-        session_id = await manager.start_session(request.url, request.spotify_token, request.sc_oauth_token, request.allow_long_tracks)
+        session_id = await manager.start_session(request.url, request.client_id, request.spotify_token, request.sc_oauth_token, request.allow_long_tracks)
         return {"session_id": session_id}
     except HTTPException:
         raise
@@ -141,9 +142,9 @@ async def spotify_refresh(request: SpotifyRefreshRequest):
 
 # --- WebSocket ---
 
-@router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await manager.ws_manager.connect(websocket)
+@router.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: str):
+    await manager.ws_manager.connect(websocket, client_id)
     try:
         while True:
             data = await websocket.receive_text()

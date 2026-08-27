@@ -68,8 +68,9 @@ function App() {
     }, [logs, showConsole]);
 
     // WebSocket
+    const clientIdRef = useRef(Math.random().toString(36).substring(2, 15));
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    const wsUrl = `${protocol}//${window.location.host}/ws/${clientIdRef.current}`;
 
     const { lastMessage } = useWebSocket(wsUrl, {
         shouldReconnect: () => true,
@@ -343,7 +344,8 @@ function App() {
                     url: url.trim(),
                     spotify_token: spotifyToken,
                     sc_oauth_token: scOAuthToken || null,
-                    allow_long_tracks: allowLongTracks
+                    allow_long_tracks: allowLongTracks,
+                    client_id: clientIdRef.current
                 })
             });
 
