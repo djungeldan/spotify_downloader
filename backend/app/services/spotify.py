@@ -91,9 +91,19 @@ class SpotifyService:
 
         tracks = []
         skipped = 0
+        page = 0
         while results:
-            for item in results['items']:
+            page += 1
+            items = results.get('items', [])
+            logger.info(f"Playlist page {page}: {len(items)} items, total so far results['total']={results.get('total')}")
+            for item in items:
+                if item is None:
+                    logger.warning("Skipping None item in playlist")
+                    skipped += 1
+                    continue
                 track = item.get('track')
+                item_type = item.get('type') or (track.get('type') if track else 'unknown')
+                logger.info(f"  item type='{item_type}' track={'NOT NULL' if track else 'NULL'} is_local={track.get('is_local') if track else 'N/A'}")
                 if not track:
                     skipped += 1
                     continue
@@ -101,7 +111,8 @@ class SpotifyService:
                 # is_local=True tracks are searchable by title+artist on SoundCloud
                 try:
                     tracks.append(self._format_track(track))
-                except Exception:
+                except Exception as ex:
+                    logger.warning(f"  Failed to format track: {ex}")
                     skipped += 1
                     continue
 
