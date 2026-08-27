@@ -352,8 +352,8 @@ class DownloadManager:
         if "_sc_direct_url" in track:
             sc_url = track["_sc_direct_url"]
             if '/sets/' in sc_url:
-                await self.send_log(session.session_id, f"SoundCloud set link found, finding YouTube match for '{track_title}'", "info")
-                return await self._download_via_youtube_search(session, track, track_dir, track_index, on_progress, cookies_file, strict_mode=False)
+                await self.send_log(session.session_id, f"SoundCloud set link found, finding SoundCloud match for '{track_title}'", "info")
+                return await self._download_via_soundcloud_search(session, track, track_dir, track_index, on_progress, sc_oauth_token=sc_oauth_token, strict_mode=False)
 
             result = {"metadata": {"url": sc_url}, "download_link": sc_url}
             await self.send_log(session.session_id, f"Executing direct SoundCloud download for '{track_title}'...", "info")
@@ -373,12 +373,7 @@ class DownloadManager:
                     sc_oauth_token=sc_oauth_token
                 )
             if not success:
-                await self.send_log(
-                    session.session_id,
-                    f"SoundCloud direct stream unavailable for '{track_title}'. Matching on YouTube...",
-                    "warning"
-                )
-                return await self._download_via_youtube_search(session, track, track_dir, track_index, on_progress, cookies_file, strict_mode=False)
+                return None
             
             files = os.listdir(track_dir)
             if files:
@@ -406,13 +401,13 @@ class DownloadManager:
                     return os.path.join(track_dir, files[0])
             return None
 
-        # Spotify Search Fallback (Try SoundCloud first, then YouTube)
+        # Spotify Search Fallback (SoundCloud only)
         sc_path = await self._download_via_soundcloud_search(session, track, track_dir, track_index, on_progress, sc_oauth_token=sc_oauth_token, strict_mode=session.strict_mode)
         if sc_path:
             return sc_path
 
-        await self.send_log(session.session_id, f"Falling back to YouTube for '{track_title}'", "info")
-        return await self._download_via_youtube_search(session, track, track_dir, track_index, on_progress, cookies_file, strict_mode=session.strict_mode)
+        await self.send_log(session.session_id, f"Could not find a valid match on SoundCloud for '{track_title}'", "warning")
+        return None
 
     async def _download_via_youtube_search(
         self, session: DownloadSession, track: Dict, track_dir: str, track_index: int, on_progress, cookies_file: Optional[str] = None, strict_mode: bool = True
