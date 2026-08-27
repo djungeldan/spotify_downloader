@@ -124,7 +124,7 @@ async def extract_track(request: ExtractTrackRequest, background_tasks: Backgrou
     return FileResponse(
         file_path,
         media_type="audio/mpeg",
-        headers={"Content-Disposition": f"attachment; filename=\"{os.path.basename(file_path)}\""}
+        filename=os.path.basename(file_path)
     )
 
 
