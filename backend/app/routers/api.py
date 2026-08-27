@@ -73,6 +73,13 @@ async def extract_track(request: ExtractTrackRequest, background_tasks: Backgrou
 
     track = session.tracks[request.track_index]
     
+    # Broadcast start so UI shows progress bar immediately
+    await manager.ws_manager.broadcast_to_client(session.client_id, {
+        "type": "track_start",
+        "session_id": session.session_id,
+        "track_index": request.track_index,
+    })
+
     # Download the track ephemerally
     file_path = await manager.extract_single_track(session, track, request.track_index, request.sc_oauth_token)
     

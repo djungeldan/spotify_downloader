@@ -6,10 +6,9 @@ import asyncio
 from typing import List, Dict, Any, Optional, Callable
 from .base import SearchProvider
 
-# Matches lines like: [download]  42.3% of 5.20MiB at 1.23MiB/s ETA 00:03
-_PROGRESS_RE = re.compile(
-    r'\[download\]\s+([\d.]+)%\s+of\s+([\d.]+\S+)\s+at\s+([\S]+)\s+ETA\s+(\S+)'
-)
+# Matches lines like: [download]  42.3% of ~5.20MiB at 1.23MiB/s ETA 00:03
+_PROGRESS_RE = re.compile(r'\[download\]\s+([\d.]+)%')
+_SPEED_RE = re.compile(r'at\s+([\d.]+[a-zA-Z]+/s)')
 
 
 async def _run_ytdlp_with_progress(
@@ -31,12 +30,13 @@ async def _run_ytdlp_with_progress(
             line = line_bytes.decode('utf-8', errors='ignore').rstrip()
             m = _PROGRESS_RE.search(line)
             if m:
+                speed_m = _SPEED_RE.search(line)
+                speed = speed_m.group(1) if speed_m else ""
                 try:
                     res = progress_callback({
                         "progress": float(m.group(1)),
-                        "speed": m.group(3),
+                        "speed": speed,
                         "state": "downloading",
-                        "eta": m.group(4),
                     })
                     if asyncio.iscoroutine(res):
                         await res
