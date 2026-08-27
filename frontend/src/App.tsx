@@ -682,6 +682,8 @@ function App() {
                                 </label>
                             </div>
 
+                        </div>
+
                         {/* Platform prompt */}
                         {spotifyError && (
                             <div className="mt-4 p-4 rounded-xl text-sm animate-slide-down flex items-center gap-3"
